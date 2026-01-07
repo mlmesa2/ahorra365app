@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,12 +33,13 @@ fun CalendarScreen(
     val currentYearMonth by viewModel.currentYearMonth.collectAsState()
     val monthChallenges by viewModel.monthChallenges.collectAsState()
     val selectedChallenge by viewModel.selectedChallenge.collectAsState()
-    
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
-                    Text("${DateUtils.getMonthNameSpanish(currentYearMonth.monthValue)} ${currentYearMonth.year}")
+                    Text("${DateUtils.getMonthNames(context,currentYearMonth.monthValue)} ${currentYearMonth.year}")
                 },
                 actions = {
                     IconButton(onClick = { viewModel.previousMonth() }) {

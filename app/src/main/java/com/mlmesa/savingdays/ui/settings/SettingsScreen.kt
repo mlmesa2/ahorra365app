@@ -9,8 +9,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mlmesa.savingdays.BuildConfig
+import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.Constants
 
 /**
@@ -173,7 +176,7 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Ahorro365 v1.0\nReto de ahorro anual gamificado",
+                        text = "Ahorro365 v${BuildConfig.VERSION_NAME}\nReto de ahorro anual gamificado",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -325,4 +328,12 @@ fun TimePickerDialog(
             }
         }
     )
+}
+
+@Preview
+@Composable
+private fun SettingPreview() {
+    Saving365Theme {
+        SettingsScreen()
+    }
 }

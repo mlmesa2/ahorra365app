@@ -13,8 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 
 /**
@@ -309,4 +311,12 @@ fun AchievementUnlockedDialog(
             }
         }
     )
+}
+
+@PreviewLightDark
+@Composable
+fun HomeScreenPreview() {
+    Saving365Theme {
+        HomeScreen()
+    }
 }
