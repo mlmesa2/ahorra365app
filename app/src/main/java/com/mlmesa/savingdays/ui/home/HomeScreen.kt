@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,7 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mlmesa.savingdays.domain.model.Statistics
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 
@@ -27,12 +30,12 @@ import com.mlmesa.savingdays.util.DateUtils
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val todayChallenge by viewModel.todayChallenge.collectAsState()
-    val statistics by viewModel.statistics.collectAsState()
-    val motivationalMessage by viewModel.motivationalMessage.collectAsState()
-    val currencySymbol by viewModel.currencySymbol.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val newAchievements by viewModel.newlyUnlockedAchievements.collectAsState()
+    val todayChallenge by viewModel.todayChallenge.collectAsStateWithLifecycle()
+    val statistics by viewModel.statistics.collectAsStateWithLifecycle()
+    val motivationalMessage by viewModel.motivationalMessage.collectAsStateWithLifecycle()
+    val currencySymbol by viewModel.currencySymbol.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val newAchievements by viewModel.newlyUnlockedAchievements.collectAsStateWithLifecycle()
     
     // Show achievement dialog if there are new achievements
     if (newAchievements.isNotEmpty()) {
@@ -201,7 +204,7 @@ fun TodayChallengeCard(
 
 @Composable
 fun StatisticsCard(
-    statistics: com.mlmesa.savingdays.domain.model.Statistics,
+    statistics: Statistics,
     currencySymbol: String
 ) {
     Card(
@@ -232,9 +235,9 @@ fun StatisticsCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            
-            Divider()
-            
+
+            HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+
             // Stats grid
             Row(
                 modifier = Modifier.fillMaxWidth(),

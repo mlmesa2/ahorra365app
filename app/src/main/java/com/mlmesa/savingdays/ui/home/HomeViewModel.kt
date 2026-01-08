@@ -60,18 +60,24 @@ class HomeViewModel @Inject constructor(
     }
     
     /**
-     * Load today's challenge
+     * Load today's challenge and observe changes
      */
     private fun loadTodayChallenge() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val challenge = getTodayChallengeUseCase()
-                _todayChallenge.value = challenge
+                // First ensure challenge exists (legacy check)
+                getTodayChallengeUseCase()
+                
+                // Now observe it
+                getTodayChallengeUseCase.getTodayChallengeFlow()
+                    .collect { challenge ->
+                        _todayChallenge.value = challenge
+                        _isLoading.value = false
+                    }
             } catch (e: Exception) {
                 // Handle error
                 e.printStackTrace()
-            } finally {
                 _isLoading.value = false
             }
         }

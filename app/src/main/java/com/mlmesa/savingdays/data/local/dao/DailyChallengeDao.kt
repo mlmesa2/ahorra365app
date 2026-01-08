@@ -22,6 +22,12 @@ interface DailyChallengeDao {
      */
     @Query("SELECT * FROM daily_challenges WHERE date = :date LIMIT 1")
     suspend fun getChallengeByDate(date: LocalDate): DailyChallenge?
+
+    /**
+     * Get a specific challenge by date as a Flow
+     */
+    @Query("SELECT * FROM daily_challenges WHERE date = :date LIMIT 1")
+    fun getChallengeByDateFlow(date: LocalDate): Flow<DailyChallenge?>
     
     /**
      * Get all completed challenges

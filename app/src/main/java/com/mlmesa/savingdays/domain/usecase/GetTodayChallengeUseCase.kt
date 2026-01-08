@@ -58,6 +58,13 @@ class GetTodayChallengeUseCase @Inject constructor(
         
         return todayChallenge
     }
+
+    /**
+     * Get today's challenge as a Flow
+     */
+    fun getTodayChallengeFlow(): kotlinx.coroutines.flow.Flow<DailyChallenge?> {
+        return repository.getTodayChallengeFlow()
+    }
     
     /**
      * Check if it's a new year compared to the challenge start date

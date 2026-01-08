@@ -40,6 +40,13 @@ class ChallengeRepository @Inject constructor(
     suspend fun getTodayChallenge(): DailyChallenge? {
         return dailyChallengeDao.getChallengeByDate(LocalDate.now())
     }
+
+    /**
+     * Get today's challenge as a Flow
+     */
+    fun getTodayChallengeFlow(): Flow<DailyChallenge?> {
+        return dailyChallengeDao.getChallengeByDateFlow(LocalDate.now())
+    }
     
     /**
      * Get all completed challenges
