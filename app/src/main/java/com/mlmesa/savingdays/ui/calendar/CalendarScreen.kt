@@ -1,5 +1,6 @@
 package com.mlmesa.savingdays.ui.calendar
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,10 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mlmesa.savingdays.R
+import com.mlmesa.savingdays.data.local.entity.DailyChallenge
+import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 import java.time.LocalDate
 import java.time.YearMonth
@@ -30,10 +38,11 @@ import java.time.YearMonth
 fun CalendarScreen(
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
-    val currentYearMonth by viewModel.currentYearMonth.collectAsState()
-    val monthChallenges by viewModel.monthChallenges.collectAsState()
-    val selectedChallenge by viewModel.selectedChallenge.collectAsState()
+    val currentYearMonth by viewModel.currentYearMonth.collectAsStateWithLifecycle()
+    val monthChallenges by viewModel.monthChallenges.collectAsStateWithLifecycle()
+    val selectedChallenge by viewModel.selectedChallenge.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var isVisibleData by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -42,13 +51,22 @@ fun CalendarScreen(
                     Text("${DateUtils.getMonthNames(context,currentYearMonth.monthValue)} ${currentYearMonth.year}")
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.previousMonth() }) {
+                    IconButton(onClick = {
+                        viewModel.previousMonth()
+                        isVisibleData = false
+                    }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Mes anterior")
                     }
-                    IconButton(onClick = { viewModel.goToToday() }) {
+                    IconButton(onClick = {
+                        viewModel.goToToday()
+                        isVisibleData = true
+                    }) {
                         Icon(Icons.Default.Today, contentDescription = "Hoy")
                     }
-                    IconButton(onClick = { viewModel.nextMonth() }) {
+                    IconButton(onClick = {
+                        viewModel.nextMonth()
+                        isVisibleData = false
+                    }) {
                         Icon(Icons.Default.ArrowForward, contentDescription = "Siguiente mes")
                     }
                 }
@@ -67,25 +85,30 @@ fun CalendarScreen(
                 challenges = monthChallenges,
                 onDayClick = { date ->
                     viewModel.selectChallenge(date)
+                    isVisibleData = true
                 }
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+
+            selectedChallenge?.let { challenge ->
+
+                ChallengeDetailsCard(
+                    challenge = challenge,
+                    isVisible = isVisibleData,
+                    onComplete = { viewModel.completeChallenge(it) }
+                )
+            }
+
         }
-    }
-    
-    // Show challenge details dialog
-    selectedChallenge?.let { challenge ->
-        ChallengeDetailsDialog(
-            challenge = challenge,
-            onDismiss = { viewModel.clearSelection() },
-            onComplete = { viewModel.completeChallenge(it) }
-        )
     }
 }
 
 @Composable
 fun CalendarGrid(
     yearMonth: YearMonth,
-    challenges: List<com.mlmesa.savingdays.data.local.entity.DailyChallenge>,
+    challenges: List<DailyChallenge>,
     onDayClick: (LocalDate) -> Unit
 ) {
     val firstDayOfMonth = yearMonth.atDay(1)
@@ -144,7 +167,7 @@ fun CalendarGrid(
 fun DayCell(
     day: Int,
     date: LocalDate,
-    challenge: com.mlmesa.savingdays.data.local.entity.DailyChallenge?,
+    challenge: DailyChallenge?,
     onClick: () -> Unit
 ) {
     val isToday = DateUtils.isToday(date)
@@ -188,9 +211,9 @@ fun DayCell(
 
 @Composable
 fun ChallengeDetailsDialog(
-    challenge: com.mlmesa.savingdays.data.local.entity.DailyChallenge,
+    challenge: DailyChallenge,
     onDismiss: () -> Unit,
-    onComplete: (com.mlmesa.savingdays.data.local.entity.DailyChallenge) -> Unit
+    onComplete: (DailyChallenge) -> Unit
 ) {
     val today = LocalDate.now()
     val isFuture = challenge.date.isAfter(today)
@@ -274,4 +297,108 @@ fun ChallengeDetailsDialog(
             }
         } else null
     )
+}
+
+@Composable
+fun ChallengeDetailsCard(
+    challenge: DailyChallenge,
+    isVisible: Boolean = true,
+    onComplete: (DailyChallenge) -> Unit
+) {
+    val today = LocalDate.now()
+    val isFuture = challenge.date.isAfter(today)
+    val isPastOrToday = !isFuture
+    val isPast = challenge.date.isBefore(today)
+    val canComplete = isPastOrToday && !challenge.isCompleted
+
+    AnimatedVisibility(
+        visible = isVisible
+    ) {
+
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Día ${challenge.dayNumber}",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Text("Fecha: ${DateUtils.formatMedium(challenge.date)}")
+
+                if (isPastOrToday) {
+                    Text(
+                        text = "Monto: $${challenge.amount}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Text(
+                        text = "Monto: ???",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "El monto se revelará cuando llegue este día",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+//                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = if (challenge.isCompleted) "✓ Completado" else "Pendiente",
+                    color = if (challenge.isCompleted)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = if (challenge.isCompleted) FontWeight.Bold else FontWeight.Normal
+                )
+
+                // Mensaje para días pasados no completados
+                if (isPast && !challenge.isCompleted) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "Puedes marcar este día como completado aunque ya haya pasado",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+
+                if (canComplete) {
+                    Button(
+                        onClick = {
+                            onComplete(challenge)
+                        }) {
+                        Text("Marcar como completado")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun CalendarCardPreview() {
+    val challenge = DailyChallenge(
+        id = 1,
+        dayNumber = 1,
+        amount = 456,
+        date = LocalDate.now(),
+        isCompleted = false,
+        completedDate = null,
+        year = 2026
+    )
+    Saving365Theme {
+        ChallengeDetailsCard(
+            challenge = challenge,
+            onComplete = {}
+        )
+    }
 }

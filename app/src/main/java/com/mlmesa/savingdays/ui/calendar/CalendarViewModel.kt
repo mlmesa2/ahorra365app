@@ -38,6 +38,7 @@ class CalendarViewModel @Inject constructor(
     init {
         observeAllChallenges()
         loadMonthChallenges()
+
     }
     
     /**
@@ -93,6 +94,7 @@ class CalendarViewModel @Inject constructor(
     fun goToToday() {
         _currentYearMonth.value = YearMonth.now()
         loadMonthChallenges()
+        selectChallenge(LocalDate.now())
     }
     
     /**
@@ -124,6 +126,15 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.completeChallenge(challenge)
+                
+                // Update the selected challenge state to reflect completion immediately
+                // This ensures the UI updates without waiting for the full list reload
+                val updatedChallenge = challenge.copy(
+                    isCompleted = true,
+                    completedDate = LocalDate.now()
+                )
+                _selectedChallenge.value = updatedChallenge
+                
                 // Refresh data
                 loadMonthChallenges()
             } catch (e: Exception) {
