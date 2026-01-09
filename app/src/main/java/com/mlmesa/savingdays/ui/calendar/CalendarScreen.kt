@@ -122,7 +122,15 @@ fun CalendarGrid(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            listOf("D", "L", "M", "M", "J", "V", "S").forEach { day ->
+            listOf(
+                stringResource(R.string.sunday_letter),
+                stringResource(R.string.monday_letter),
+                stringResource(R.string.tuesday_letter),
+                stringResource(R.string.wednesday_letter),
+                stringResource(R.string.thursday_letter),
+                stringResource(R.string.friday_letter),
+                stringResource(R.string.saturday_letter)
+            ).forEach { day ->
                 Text(
                     text = day,
                     modifier = Modifier.weight(1f),
