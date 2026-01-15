@@ -2,18 +2,25 @@ package com.mlmesa.savingdays.ui.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mlmesa.savingdays.data.local.entity.Achievement
 import com.mlmesa.savingdays.data.local.entity.DailyChallenge
 import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
 import com.mlmesa.savingdays.domain.model.Statistics
-import com.mlmesa.savingdays.domain.usecase.*
+import com.mlmesa.savingdays.domain.usecase.CheckAchievementsUseCase
+import com.mlmesa.savingdays.domain.usecase.CompleteChallengeUseCase
+import com.mlmesa.savingdays.domain.usecase.GetStatisticsUseCase
+import com.mlmesa.savingdays.domain.usecase.GetTodayChallengeUseCase
 import com.mlmesa.savingdays.util.MotivationalMessages
-import com.mlmesa.savingdays.util.WorkManagerScheduler
-import dagger.hilt.android.internal.Contexts.getApplication
+import com.mlmesa.savingdays.worker.DailyNotificationReminder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +34,8 @@ class HomeViewModel @Inject constructor(
     private val completeChallengeUseCase: CompleteChallengeUseCase,
     private val getStatisticsUseCase: GetStatisticsUseCase,
     private val checkAchievementsUseCase: CheckAchievementsUseCase,
-    private val preferencesRepository: UserPreferencesRepository
+    private val preferencesRepository: UserPreferencesRepository,
+    private val dailyNotificationReminder: DailyNotificationReminder
 ) : AndroidViewModel(application)  {
 
 
@@ -163,8 +171,7 @@ class HomeViewModel @Inject constructor(
     fun toggleNotificationOnOff(enabled: Boolean) {
         viewModelScope.launch {
             preferencesRepository.setNotificationsEnabled(enabled)
-            WorkManagerScheduler.cancelDailyNotification(getApplication())
-
+            dailyNotificationReminder.cancel()
         }
     }
 }

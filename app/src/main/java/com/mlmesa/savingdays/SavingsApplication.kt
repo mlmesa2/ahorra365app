@@ -2,16 +2,13 @@ package com.mlmesa.savingdays
 
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Configuration
 import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
 import com.mlmesa.savingdays.data.repository.ChallengeRepository
 import com.mlmesa.savingdays.util.NotificationHelper
-import com.mlmesa.savingdays.util.WorkManagerScheduler
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +17,7 @@ import javax.inject.Inject
  * Annotated with @HiltAndroidApp to enable Hilt dependency injection.
  */
 @HiltAndroidApp
-class SavingsApplication : Application(), Configuration.Provider {
+class SavingsApplication : Application() {
     
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
@@ -32,11 +29,6 @@ class SavingsApplication : Application(), Configuration.Provider {
     lateinit var challengeRepository: ChallengeRepository
     
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    
-    override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
     
     override fun onCreate() {
         super.onCreate()
@@ -51,14 +43,14 @@ class SavingsApplication : Application(), Configuration.Provider {
                 challengeRepository.initializeAchievements()
                 
                 // Schedule notifications if enabled
-                val preferences = preferencesRepository.userPreferencesFlow.first()
+                /*val preferences = preferencesRepository.userPreferencesFlow.first()
                 if (preferences.notificationsEnabled) {
                     WorkManagerScheduler.scheduleDailyNotification(
                         this@SavingsApplication,
                         preferences.notificationHour,
                         preferences.notificationMinute
                     )
-                }
+                }*/
             } catch (e: Exception) {
                 e.printStackTrace()
             }

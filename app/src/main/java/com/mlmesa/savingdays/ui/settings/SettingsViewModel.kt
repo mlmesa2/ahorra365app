@@ -9,9 +9,13 @@ import com.mlmesa.savingdays.data.repository.ChallengeRepository
 import com.mlmesa.savingdays.domain.model.Statistics
 import com.mlmesa.savingdays.domain.usecase.GenerateChallengesUseCase
 import com.mlmesa.savingdays.domain.usecase.GetStatisticsUseCase
-import com.mlmesa.savingdays.util.WorkManagerScheduler
+import com.mlmesa.savingdays.worker.DailyNotificationReminder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -25,7 +29,8 @@ class SettingsViewModel @Inject constructor(
     private val preferencesRepository: UserPreferencesRepository,
     private val repository: ChallengeRepository,
     private val generateChallengesUseCase: GenerateChallengesUseCase,
-    private val getStatisticsUseCase: GetStatisticsUseCase
+    private val getStatisticsUseCase: GetStatisticsUseCase,
+    private val dailyNotificationReminder: DailyNotificationReminder
 ) : AndroidViewModel(application) {
     
     // User preferences
@@ -59,14 +64,9 @@ class SettingsViewModel @Inject constructor(
             preferencesRepository.setNotificationsEnabled(enabled)
             
             if (enabled) {
-                val prefs = userPreferences.value
-                WorkManagerScheduler.scheduleDailyNotification(
-                    getApplication(),
-                    prefs.notificationHour,
-                    prefs.notificationMinute
-                )
+                dailyNotificationReminder.reSchedule()
             } else {
-                WorkManagerScheduler.cancelDailyNotification(getApplication())
+                dailyNotificationReminder.cancel()
             }
         }
     }
@@ -80,11 +80,7 @@ class SettingsViewModel @Inject constructor(
             
             // Reschedule if notifications are enabled
             if (userPreferences.value.notificationsEnabled) {
-                WorkManagerScheduler.scheduleDailyNotification(
-                    getApplication(),
-                    hour,
-                    minute
-                )
+                dailyNotificationReminder.reSchedule()
             }
         }
     }
