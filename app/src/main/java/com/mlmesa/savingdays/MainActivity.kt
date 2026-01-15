@@ -1,15 +1,34 @@
 package com.mlmesa.savingdays
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.mlmesa.savingdays.ui.components.BottomNavigationBar
 import com.mlmesa.savingdays.ui.navigation.NavigationGraph
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
@@ -23,12 +42,53 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var reminderManager: DailyNotificationReminder
 
+    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var appUpdateManager: AppUpdateManager
+    private lateinit var appUpdateResultLauncher: androidx.activity.result.ActivityResultLauncher<IntentSenderRequest>
+    private val updateType = AppUpdateType.FLEXIBLE
 
+    private val installStateUpdatedListener =
+        InstallStateUpdatedListener { state ->
+            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                // Download is finished. Show a notification
+                Log.d("MainActivity", "Update downloaded. Ready to install.")
+                mainViewModel.onUpdateDownloaded()
+            }
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        appUpdateManager.registerListener(installStateUpdatedListener)
+        appUpdateResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            if (result.resultCode != RESULT_OK) {
+                Log.e("MainActivity", "Update flow failed! Result code: ${result.resultCode}")
+            }
+        }
+        checkForAppUpdate()
         setContent {
             Saving365Theme {
+                val showUpdateDialog by mainViewModel.showUpdateDialog.collectAsStateWithLifecycle()
+                if (showUpdateDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                        },
+                        title = { Text("Actualización descargada") },
+                        text = { Text("La nueva versión de la aplicación ha sido descargada. Reinicia para instalarla.") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    appUpdateManager.completeUpdate()
+                                    mainViewModel.hideUpdateDialog()
+                                }
+                            ) {
+                                Text("Reiniciar")
+                            }
+                        },
+                    )
+                }
                 val navController = rememberNavController()
                 
                 Scaffold(
@@ -48,5 +108,44 @@ class MainActivity : ComponentActivity() {
                 reminderManager.reSchedule()
             }
         }
+    }
+    private fun checkForAppUpdate() {
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { updateInfo ->
+            val isUpdateAvailable =
+                updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val isUpdateAllowed = when (updateType) {
+                AppUpdateType.FLEXIBLE -> updateInfo.isFlexibleUpdateAllowed
+                AppUpdateType.IMMEDIATE -> updateInfo.isImmediateUpdateAllowed
+                else -> false
+            }
+            if (isUpdateAvailable && isUpdateAllowed) {
+                startUpdateFlow(updateInfo)
+            }
+        }
+    }
+
+    private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
+        appUpdateManager.startUpdateFlowForResult(
+            appUpdateInfo,
+            appUpdateResultLauncher,
+            AppUpdateOptions.newBuilder(updateType).build()
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+            if (info.installStatus() == InstallStatus.DOWNLOADED) {
+                mainViewModel.onUpdateDownloaded()
+            }
+            if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                startUpdateFlow(info)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        appUpdateManager.unregisterListener(installStateUpdatedListener)
     }
 }
