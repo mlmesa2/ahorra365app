@@ -1,5 +1,6 @@
 package com.mlmesa.savingdays.ui.home
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,14 +19,18 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mlmesa.savingdays.domain.model.Statistics
+import com.mlmesa.savingdays.ui.components.ScreenTitle
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
+import com.mlmesa.savingdays.util.NotificationPermissionRequest
 
 /**
  * Home screen showing today's challenge
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class,
+    ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
@@ -34,9 +39,10 @@ fun HomeScreen(
     val statistics by viewModel.statistics.collectAsStateWithLifecycle()
     val motivationalMessage by viewModel.motivationalMessage.collectAsStateWithLifecycle()
     val currencySymbol by viewModel.currencySymbol.collectAsStateWithLifecycle()
+    val notificationIsEnabled by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val newAchievements by viewModel.newlyUnlockedAchievements.collectAsStateWithLifecycle()
-    
+
     // Show achievement dialog if there are new achievements
     if (newAchievements.isNotEmpty()) {
         AchievementUnlockedDialog(
@@ -44,11 +50,24 @@ fun HomeScreen(
             onDismiss = { viewModel.clearNewAchievements() }
         )
     }
-    
+
+    if (notificationIsEnabled) {
+        NotificationPermissionRequest(
+            onPermissionGranted = { granted ->
+                if (granted) {
+                    Log.d("MYTAG", "HomeScreen: permission granted")
+                } else {
+                    Log.d("MYTAG", "HomeScreen: permission denied")
+                    viewModel.toggleNotificationOnOff(false)
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Ahorra365") },
+                title = { ScreenTitle(title = "Ahorra365") },
                 actions = {
                     IconButton(onClick = { viewModel.refresh() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Actualizar")
@@ -82,7 +101,7 @@ fun HomeScreen(
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    
+
                     // Today's challenge card
                     todayChallenge?.let { challenge ->
                         TodayChallengeCard(
@@ -105,7 +124,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                    
+
                     // Statistics summary
                     statistics?.let { stats ->
                         StatisticsCard(

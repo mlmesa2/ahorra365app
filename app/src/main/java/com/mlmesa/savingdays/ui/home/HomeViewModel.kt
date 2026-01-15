@@ -1,5 +1,7 @@
 package com.mlmesa.savingdays.ui.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mlmesa.savingdays.data.local.entity.Achievement
@@ -8,6 +10,8 @@ import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
 import com.mlmesa.savingdays.domain.model.Statistics
 import com.mlmesa.savingdays.domain.usecase.*
 import com.mlmesa.savingdays.util.MotivationalMessages
+import com.mlmesa.savingdays.util.WorkManagerScheduler
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,13 +22,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    application: Application,
     private val getTodayChallengeUseCase: GetTodayChallengeUseCase,
     private val completeChallengeUseCase: CompleteChallengeUseCase,
     private val getStatisticsUseCase: GetStatisticsUseCase,
     private val checkAchievementsUseCase: CheckAchievementsUseCase,
     private val preferencesRepository: UserPreferencesRepository
-) : ViewModel() {
-    
+) : AndroidViewModel(application)  {
+
+
     // State for today's challenge
     private val _todayChallenge = MutableStateFlow<DailyChallenge?>(null)
     val todayChallenge: StateFlow<DailyChallenge?> = _todayChallenge.asStateFlow()
@@ -44,6 +50,14 @@ class HomeViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = "$"
+        )
+    // User preferences
+    val notificationsEnabled: StateFlow<Boolean> = preferencesRepository.userPreferencesFlow
+        .map { it.notificationsEnabled }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
         )
     
     // State for newly unlocked achievements
@@ -141,5 +155,16 @@ class HomeViewModel @Inject constructor(
      */
     fun clearNewAchievements() {
         _newlyUnlockedAchievements.value = emptyList()
+    }
+
+    /**
+     * Toggle notifications on/off
+     */
+    fun toggleNotificationOnOff(enabled: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setNotificationsEnabled(enabled)
+            WorkManagerScheduler.cancelDailyNotification(getApplication())
+
+        }
     }
 }
