@@ -18,8 +18,8 @@ android {
         applicationId = "com.mlmesa.savingdays"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "0.0.6"
+        versionCode = 5
+        versionName = "0.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
