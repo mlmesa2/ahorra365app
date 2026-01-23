@@ -59,6 +59,15 @@ class HomeViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = "$"
         )
+
+    // State for currency scale
+    val currencyScale: StateFlow<com.mlmesa.savingdays.data.model.CurrencyScale> = preferencesRepository.userPreferencesFlow
+        .map { it.currencyScale }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = com.mlmesa.savingdays.data.model.CurrencyScale.MEXICO
+        )
     // User preferences
     val notificationsEnabled: StateFlow<Boolean> = preferencesRepository.userPreferencesFlow
         .map { it.notificationsEnabled }

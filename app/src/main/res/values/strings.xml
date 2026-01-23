@@ -20,4 +20,16 @@
     <string name="friday_letter">V</string>
     <string name="saturday_letter">S</string>
     <string name="pp_url">https://mlmesa2.github.io/Ahorra365/</string>
+
+    <!--CurrencyScale countries:-->
+    <string name="country_name_colombia">Colombia (COP)</string>
+    <string name="country_name_europe">Europa (EUR)</string>
+    <string name="country_name_united_sates">Estados Unidos (USD)</string>
+    <string name="country_name_mexico">México (MXN)</string>
+    <string name="country_name_argentina">Argentina (ARS)</string>
+    <string name="country_name_chile">Chile (CLP)</string>
+    <string name="country_name_brazil">Brasil (BRL)</string>
+    <string name="country_name_peru">Perú (PEN)</string>
+    <string name="country_name_great_britain">Reino Unido (GBP)</string>
+    <string name="country_name_generic">Genérico</string>
 </resources>

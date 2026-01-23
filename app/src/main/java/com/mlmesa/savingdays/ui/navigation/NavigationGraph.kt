@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.mlmesa.savingdays.ui.achievements.AchievementsScreen
 import com.mlmesa.savingdays.ui.calendar.CalendarScreen
 import com.mlmesa.savingdays.ui.home.HomeScreen
+import com.mlmesa.savingdays.ui.onboarding.OnboardingScreen
 import com.mlmesa.savingdays.ui.settings.SettingsScreen
 
 /**
@@ -16,13 +17,24 @@ import com.mlmesa.savingdays.ui.settings.SettingsScreen
 @Composable
 fun NavigationGraph(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    startDestination: String = Screen.Home.route
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(Screen.Onboarding.route) {
+            OnboardingScreen(
+                onOnboardingComplete = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Onboarding.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen()
         }

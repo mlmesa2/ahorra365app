@@ -15,16 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.mlmesa.savingdays.data.local.entity.DailyChallenge
 import com.mlmesa.savingdays.domain.model.Statistics
 import com.mlmesa.savingdays.ui.components.ScreenTitle
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 import com.mlmesa.savingdays.util.NotificationPermissionRequest
+import com.mlmesa.savingdays.data.model.CurrencyScale
+import java.time.LocalDate
 
 /**
  * Home screen showing today's challenge
@@ -39,6 +43,7 @@ fun HomeScreen(
     val statistics by viewModel.statistics.collectAsStateWithLifecycle()
     val motivationalMessage by viewModel.motivationalMessage.collectAsStateWithLifecycle()
     val currencySymbol by viewModel.currencySymbol.collectAsStateWithLifecycle()
+    val currencyScale by viewModel.currencyScale.collectAsStateWithLifecycle()
     val notificationIsEnabled by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val newAchievements by viewModel.newlyUnlockedAchievements.collectAsStateWithLifecycle()
@@ -106,7 +111,7 @@ fun HomeScreen(
                     todayChallenge?.let { challenge ->
                         TodayChallengeCard(
                             challenge = challenge,
-                            currencySymbol = currencySymbol,
+                            currencyScale = currencyScale,
                             onComplete = { viewModel.completeChallenge() }
                         )
                     } ?: run {
@@ -129,7 +134,7 @@ fun HomeScreen(
                     statistics?.let { stats ->
                         StatisticsCard(
                             statistics = stats,
-                            currencySymbol = currencySymbol
+                            currencyScale = currencyScale
                         )
                     }
                 }
@@ -141,7 +146,7 @@ fun HomeScreen(
 @Composable
 fun TodayChallengeCard(
     challenge: com.mlmesa.savingdays.data.local.entity.DailyChallenge,
-    currencySymbol: String,
+    currencyScale: CurrencyScale,
     onComplete: () -> Unit
 ) {
     Card(
@@ -174,14 +179,15 @@ fun TodayChallengeCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             
-            Divider()
+            HorizontalDivider()
             
-            // Amount
+            // Amount (with currency scale applied)
             Text(
-                text = "$currencySymbol${challenge.amount}",
+                text = currencyScale.formatAmount(challenge.amount),
                 style = MaterialTheme.typography.displayLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
             )
             
             Text(
@@ -224,7 +230,7 @@ fun TodayChallengeCard(
 @Composable
 fun StatisticsCard(
     statistics: Statistics,
-    currencySymbol: String
+    currencyScale: CurrencyScale
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -264,7 +270,7 @@ fun StatisticsCard(
             ) {
                 StatItem(
                     label = "Total ahorrado",
-                    value = "$currencySymbol${statistics.totalSaved}"
+                    value = currencyScale.formatAmount(statistics.totalSaved)
                 )
                 StatItem(
                     label = "Días completados",
@@ -340,5 +346,25 @@ fun AchievementUnlockedDialog(
 fun HomeScreenPreview() {
     Saving365Theme {
         HomeScreen()
+    }
+}
+
+@Preview
+@Composable
+private fun TodayChallengeCardPreview() {
+    Saving365Theme {
+        TodayChallengeCard(
+            challenge = DailyChallenge(
+                dayNumber = 3,
+                id = 3,
+                amount = 365,
+                date = LocalDate.now(),
+                isCompleted = true,
+                year = 2026,
+                completedDate = null
+            ),
+            currencyScale = CurrencyScale.COLOMBIA,
+            onComplete = {}
+        )
     }
 }

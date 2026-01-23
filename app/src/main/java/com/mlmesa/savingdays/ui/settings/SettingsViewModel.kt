@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mlmesa.savingdays.data.local.preferences.UserPreferences
 import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
+import com.mlmesa.savingdays.data.model.CurrencyScale
 import com.mlmesa.savingdays.data.repository.ChallengeRepository
 import com.mlmesa.savingdays.domain.model.Statistics
 import com.mlmesa.savingdays.domain.usecase.GenerateChallengesUseCase
@@ -91,6 +92,15 @@ class SettingsViewModel @Inject constructor(
     fun updateCurrency(symbol: String) {
         viewModelScope.launch {
             preferencesRepository.setCurrencySymbol(symbol)
+        }
+    }
+
+    /**
+     * Update currency scale (country-based)
+     */
+    fun updateCurrencyScale(scale: CurrencyScale) {
+        viewModelScope.launch {
+            preferencesRepository.setCurrencyScale(scale)
         }
     }
     

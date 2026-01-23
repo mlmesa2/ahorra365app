@@ -2,6 +2,7 @@ package com.mlmesa.savingdays.ui.calendar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -25,6 +26,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.local.entity.DailyChallenge
+import com.mlmesa.savingdays.data.model.CurrencyScale
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 import java.time.LocalDate
@@ -41,6 +43,7 @@ fun CalendarScreen(
     val currentYearMonth by viewModel.currentYearMonth.collectAsStateWithLifecycle()
     val monthChallenges by viewModel.monthChallenges.collectAsStateWithLifecycle()
     val selectedChallenge by viewModel.selectedChallenge.collectAsStateWithLifecycle()
+    val currencyScale by viewModel.currencyScale.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var isVisibleData by remember { mutableStateOf(false) }
 
@@ -77,7 +80,7 @@ fun CalendarScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             // Calendar grid
             CalendarGrid(
@@ -96,6 +99,7 @@ fun CalendarScreen(
 
                 ChallengeDetailsCard(
                     challenge = challenge,
+                    currencyScale = currencyScale,
                     isVisible = isVisibleData,
                     onComplete = { viewModel.completeChallenge(it) }
                 )
@@ -188,12 +192,16 @@ fun DayCell(
         isFuture -> MaterialTheme.colorScheme.surfaceVariant
         else -> MaterialTheme.colorScheme.surface
     }
-    
+
     Box(
         modifier = Modifier
             .aspectRatio(1f)
             .clip(CircleShape)
             .background(backgroundColor)
+            .then(
+                if (isToday) Modifier.border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                else Modifier
+            )
             .clickable(enabled = challenge != null) { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -310,6 +318,7 @@ fun ChallengeDetailsDialog(
 @Composable
 fun ChallengeDetailsCard(
     challenge: DailyChallenge,
+    currencyScale: CurrencyScale,
     isVisible: Boolean = true,
     onComplete: (DailyChallenge) -> Unit
 ) {
@@ -339,7 +348,7 @@ fun ChallengeDetailsCard(
 
                 if (isPastOrToday) {
                     Text(
-                        text = "Monto: $${challenge.amount}",
+                        text = "Monto: ${currencyScale.formatAmount(challenge.amount)}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -392,6 +401,7 @@ fun ChallengeDetailsCard(
 }
 
 @PreviewLightDark
+@Preview(locale = "es")
 @Composable
 private fun CalendarCardPreview() {
     val challenge = DailyChallenge(
@@ -406,7 +416,29 @@ private fun CalendarCardPreview() {
     Saving365Theme {
         ChallengeDetailsCard(
             challenge = challenge,
+            currencyScale = CurrencyScale.MEXICO,
             onComplete = {}
         )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun DayCellPreview() {
+    Saving365Theme {
+        val challenge = DailyChallenge(
+            id = 1,
+            dayNumber = 1,
+            amount = 456,
+            date = LocalDate.now(),
+            isCompleted = true,
+            completedDate = null,
+            year = 2026
+        )
+        DayCell(
+            day = 23,
+            date = LocalDate.now(),
+            challenge = challenge
+        ) { }
     }
 }

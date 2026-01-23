@@ -49,7 +49,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -67,6 +69,7 @@ import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.Constants
 import com.mlmesa.savingdays.util.NotificationPermissionRequest
 import com.mlmesa.savingdays.util.launchChromeTab
+import com.mlmesa.savingdays.data.model.CurrencyScale
 import java.util.Locale
 
 /**
@@ -90,6 +93,7 @@ fun SettingsScreen(
         showResetConfirmation = { viewModel.showResetConfirmation() },
         updateNotificationTime = viewModel::updateNotificationTime,
         updateCurrency = viewModel::updateCurrency,
+        updateCurrencyScale = viewModel::updateCurrencyScale,
         hideResetConfirmation = viewModel::hideResetConfirmation,
         resetChallenge = viewModel::resetChallenge,
     )
@@ -107,11 +111,13 @@ fun SettingsScreen(
     showResetConfirmation: () -> Unit,
     updateNotificationTime: (Int, Int) -> Unit,
     updateCurrency: (String) -> Unit,
+    updateCurrencyScale: (CurrencyScale) -> Unit,
     hideResetConfirmation: () -> Unit,
     resetChallenge: () -> Unit,
 ) {
 
     var showCurrencyDialog by remember { mutableStateOf(false) }
+    var showCountryDialog by remember { mutableStateOf(false) }
     var showTimePickerDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val url = stringResource(R.string.pp_url)
@@ -184,12 +190,12 @@ fun SettingsScreen(
             HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
             // Currency section
-            SettingsSection(title = "Moneda") {
+            SettingsSection(title = "País / Moneda") {
                 SettingsItem(
                     icon = Icons.Default.AttachMoney,
-                    title = "Símbolo",
-                    subtitle = "Seleccionado: ${preferences.currencySymbol}",
-                    onClick = { showCurrencyDialog = true }
+                    title = "País",
+                    subtitle = stringResource(preferences.currencyScale.displayName),
+                    onClick = { showCountryDialog = true }
                 )
             }
             HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
@@ -220,7 +226,7 @@ fun SettingsScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text("Total ahorrado: ${preferences.currencySymbol}${stats.totalSaved}")
+                        Text("Total ahorrado: ${preferences.currencyScale.formatAmount(stats.totalSaved)}")
                         Text("Días completados: ${stats.daysCompleted}/${Constants.TOTAL_CHALLENGE_DAYS}")
                         Text("Progreso: ${stats.progressPercentage.toInt()}%")
                         Text("Racha actual: ${stats.currentStreak} días")
@@ -295,7 +301,7 @@ fun SettingsScreen(
         }
     }
 
-    // Currency selection dialog
+    // Currency selection dialog (legacy, kept for backwards compatibility)
     if (showCurrencyDialog) {
         CurrencySelectionDialog(
             currentCurrency = preferences.currencySymbol,
@@ -304,6 +310,19 @@ fun SettingsScreen(
                 showCurrencyDialog = false
             },
             onDismiss = { showCurrencyDialog = false }
+        )
+    }
+
+    // Country/Scale selection dialog (new)
+    if (showCountryDialog) {
+        CountryScaleSelectionDialog(
+            daysCompleted = statistics?.daysCompleted,
+            currentScale = preferences.currencyScale,
+            onSelect = { scale ->
+                updateCurrencyScale(scale)
+                showCountryDialog = false
+            },
+            onDismiss = { showCountryDialog = false }
         )
     }
 
@@ -428,6 +447,55 @@ fun CurrencySelectionDialog(
     )
 }
 
+@Composable
+fun CountryScaleSelectionDialog(
+    daysCompleted: Int?,
+    currentScale: CurrencyScale,
+    onSelect: (CurrencyScale) -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Seleccionar país") },
+        text = {
+            Column {
+                CurrencyScale.getAllScales().forEach { scale ->
+                    TextButton(
+                        onClick = { onSelect(scale) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = if (scale == currentScale) "✓ ${stringResource(scale.displayName)}" else stringResource(scale.displayName),
+                            color = if (scale == currentScale) 
+                                MaterialTheme.colorScheme.primary 
+                            else 
+                                MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                // Check if user has data (completed days > 0)
+                if ((daysCompleted ?: 0) > 0) {
+                    Text(
+                        text = "Si cambias de país, los montos se ajustarán a la nueva moneda. Como ya tienes días completados, el resultado final del monto ahorrado podría variar del original mostrado.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Justify
+                    )
+
+
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
@@ -487,8 +555,22 @@ private fun SettingPreview() {
             showResetConfirmation = {},
             updateNotificationTime = { _, _ -> },
             updateCurrency = {},
+            updateCurrencyScale = {},
             hideResetConfirmation = {},
             resetChallenge = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun CountryScaleSelectionDialogPreview() {
+    Saving365Theme {
+        CountryScaleSelectionDialog(
+            daysCompleted = 1,
+            currentScale = CurrencyScale.ARGENTINA,
+            onSelect = {},
+            onDismiss = {}
         )
     }
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.time.LocalDate
+import com.mlmesa.savingdays.data.model.CurrencyScale
 
 /**
  * Extension property to create DataStore instance
@@ -32,6 +33,8 @@ class UserPreferencesRepository(private val context: Context) {
         private val CURRENT_STREAK = intPreferencesKey("current_streak")
         private val LONGEST_STREAK = intPreferencesKey("longest_streak")
         private val LAST_COMPLETED_DATE = stringPreferencesKey("last_completed_date")
+        private val CURRENCY_SCALE = stringPreferencesKey("currency_scale")
+        private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
     }
     
     /**
@@ -55,7 +58,11 @@ class UserPreferencesRepository(private val context: Context) {
                 challengeStartDate = preferences[CHALLENGE_START_DATE]?.let { LocalDate.parse(it) },
                 currentStreak = preferences[CURRENT_STREAK] ?: 0,
                 longestStreak = preferences[LONGEST_STREAK] ?: 0,
-                lastCompletedDate = preferences[LAST_COMPLETED_DATE]?.let { LocalDate.parse(it) }
+                lastCompletedDate = preferences[LAST_COMPLETED_DATE]?.let { LocalDate.parse(it) },
+                currencyScale = preferences[CURRENCY_SCALE]?.let { 
+                    try { CurrencyScale.valueOf(it) } catch (e: Exception) { CurrencyScale.GENERIC }
+                } ?: CurrencyScale.GENERIC,
+                onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false
             )
         }
     
@@ -138,11 +145,28 @@ class UserPreferencesRepository(private val context: Context) {
             preferences.remove(LAST_COMPLETED_DATE)
         }
     }
+
+    /**
+     * Update currency scale
+     */
+    suspend fun setCurrencyScale(scale: CurrencyScale) {
+        dataStore.edit { preferences ->
+            preferences[CURRENCY_SCALE] = scale.name
+            // Also update the symbol for backwards compatibility
+            preferences[CURRENCY_SYMBOL] = scale.symbol
+        }
+    }
+
+    /**
+     * Mark onboarding as completed
+     */
+    suspend fun setOnboardingCompleted(completed: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[ONBOARDING_COMPLETED] = completed
+        }
+    }
 }
 
-/**
- * Data class representing user preferences
- */
 data class UserPreferences(
     val notificationsEnabled: Boolean = true,
     val notificationHour: Int = 9,
@@ -152,5 +176,7 @@ data class UserPreferences(
     val challengeStartDate: LocalDate? = null,
     val currentStreak: Int = 0,
     val longestStreak: Int = 0,
-    val lastCompletedDate: LocalDate? = null
+    val lastCompletedDate: LocalDate? = null,
+    val currencyScale: CurrencyScale = CurrencyScale.GENERIC,
+    val onboardingCompleted: Boolean = false
 )

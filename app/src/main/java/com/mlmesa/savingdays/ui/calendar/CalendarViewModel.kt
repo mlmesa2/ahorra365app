@@ -3,6 +3,8 @@ package com.mlmesa.savingdays.ui.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mlmesa.savingdays.data.local.entity.DailyChallenge
+import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
+import com.mlmesa.savingdays.data.model.CurrencyScale
 import com.mlmesa.savingdays.data.repository.ChallengeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -16,7 +18,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val repository: ChallengeRepository
+    private val repository: ChallengeRepository,
+    private val preferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
     
     // Current year-month being viewed
@@ -34,6 +37,15 @@ class CalendarViewModel @Inject constructor(
     // Selected challenge details
     private val _selectedChallenge = MutableStateFlow<DailyChallenge?>(null)
     val selectedChallenge: StateFlow<DailyChallenge?> = _selectedChallenge.asStateFlow()
+
+    // Currency scale for amount display
+    val currencyScale: StateFlow<CurrencyScale> = preferencesRepository.userPreferencesFlow
+        .map { it.currencyScale }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = CurrencyScale.GENERIC
+        )
     
     init {
         observeAllChallenges()

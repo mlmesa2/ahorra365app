@@ -17,7 +17,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -29,8 +31,10 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
+import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
 import com.mlmesa.savingdays.ui.components.BottomNavigationBar
 import com.mlmesa.savingdays.ui.navigation.NavigationGraph
+import com.mlmesa.savingdays.ui.navigation.Screen
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.worker.DailyNotificationReminder
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +45,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var reminderManager: DailyNotificationReminder
+
+    @Inject
+    lateinit var preferencesRepository: UserPreferencesRepository
 
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var appUpdateManager: AppUpdateManager
@@ -55,9 +62,15 @@ class MainActivity : ComponentActivity() {
                 mainViewModel.onUpdateDownloaded()
             }
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+    
+        installSplashScreen().setKeepOnScreenCondition {
+            mainViewModel.userPreferences.value == null
+        }
+
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         appUpdateManager.registerListener(installStateUpdatedListener)
         appUpdateResultLauncher = registerForActivityResult(
@@ -71,6 +84,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             Saving365Theme {
                 val showUpdateDialog by mainViewModel.showUpdateDialog.collectAsStateWithLifecycle()
+                val userPreferences by mainViewModel.userPreferences.collectAsStateWithLifecycle()
+
+                // Wait for preferences to load (Splash screen covers this)
+                if (userPreferences == null) {
+                    return@Saving365Theme
+                }
+
+                val onboardingCompleted = userPreferences!!.onboardingCompleted
+                val startDestination = if (onboardingCompleted) {
+                    Screen.Home.route
+                } else {
+                    Screen.Onboarding.route
+                }
+
                 if (showUpdateDialog) {
                     AlertDialog(
                         onDismissRequest = {
@@ -89,17 +116,27 @@ class MainActivity : ComponentActivity() {
                         },
                     )
                 }
+
                 val navController = rememberNavController()
-                
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                Log.d("MYTAG", "onCreate: Current route: $currentRoute")
+                Log.d("MYTAG", "onCreate: onBoardingcomplete: ${userPreferences!!.onboardingCompleted}")
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        BottomNavigationBar(navController = navController)
+                        // Hide bottom bar during onboarding. Use null check to allow initial composition but
+                        // rely on reactive state update
+                        if (currentRoute != Screen.Onboarding.route && currentRoute != null) {
+                            BottomNavigationBar(navController = navController)
+                        }
                     }
                 ) { innerPadding ->
                     NavigationGraph(
                         modifier = Modifier.padding(innerPadding),
-                        navController = navController
+                        navController = navController,
+                        startDestination = startDestination
                     )
                 }
             }
@@ -109,6 +146,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     private fun checkForAppUpdate() {
         appUpdateManager.appUpdateInfo.addOnSuccessListener { updateInfo ->
             val isUpdateAvailable =
