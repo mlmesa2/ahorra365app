@@ -84,6 +84,16 @@ class ChallengeRepository @Inject constructor(
     fun getTotalSaved(): Flow<Int?> {
         return dailyChallengeDao.getTotalSaved()
     }
+
+    /**
+     * Get total amount saved for a month
+     */
+     fun getTotalSavedForMonth(year: Int, month: Int): Flow<Int?> {
+        val startDate = LocalDate.of(year, month, 1)
+        val endDate = startDate.plusMonths(1).minusDays(1)
+        return dailyChallengeDao.getTotalSavedForMonth(year,  startDate, endDate)
+     }
+
     
     /**
      * Insert a new challenge

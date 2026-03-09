@@ -19,18 +19,20 @@ class GetStatisticsUseCase @Inject constructor(
     /**
      * Get statistics as a Flow for reactive updates
      */
-    operator fun invoke(): Flow<Statistics> {
+    operator fun invoke(year: Int = 2026, month: Int = 1): Flow<Statistics> {
         return combine(
             repository.getTotalSaved(),
+            repository.getTotalSavedForMonth(year = year, month = month),
             repository.getCompletedCount(),
             preferencesRepository.userPreferencesFlow
-        ) { totalSaved, completedCount, preferences ->
+        ) { totalSaved, monthSaved, completedCount, preferences ->
             val total = totalSaved ?: 0
             val remaining = Statistics.TOTAL_DAYS - completedCount
             val progressPercentage = (completedCount.toFloat() / Statistics.TOTAL_DAYS) * 100f
             
             Statistics(
                 totalSaved = total,
+                monthSaved = monthSaved ?: 0,
                 daysCompleted = completedCount,
                 daysRemaining = remaining,
                 currentStreak = preferences.currentStreak,

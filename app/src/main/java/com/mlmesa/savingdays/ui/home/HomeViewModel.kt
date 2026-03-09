@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.YearMonth
 import javax.inject.Inject
 
 /**
@@ -84,7 +85,9 @@ class HomeViewModel @Inject constructor(
     // Loading state
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-    
+
+    private val _currentYearMonth = MutableStateFlow(YearMonth.now())
+
     init {
         loadTodayChallenge()
         observeStatistics()
@@ -119,11 +122,11 @@ class HomeViewModel @Inject constructor(
      */
     private fun observeStatistics() {
         viewModelScope.launch {
-            getStatisticsUseCase()
-                .catch { e -> 
+            getStatisticsUseCase(
+                year = _currentYearMonth.value.year, month = _currentYearMonth.value.monthValue
+            ).catch { e ->
                     e.printStackTrace()
-                }
-                .collect { stats ->
+                }.collect { stats ->
                     _statistics.value = stats
                 }
         }

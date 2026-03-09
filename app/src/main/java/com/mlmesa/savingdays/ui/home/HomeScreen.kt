@@ -273,8 +273,8 @@ fun StatisticsCard(
                     value = currencyScale.formatAmount(statistics.totalSaved)
                 )
                 StatItem(
-                    label = "Días completados",
-                    value = "${statistics.daysCompleted}"
+                    label = "Ahorrado este mes",
+                    value = "${statistics.monthSaved}"
                 )
             }
             
@@ -282,6 +282,10 @@ fun StatisticsCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
+                StatItem(
+                    label = "Días completados",
+                    value = "${statistics.daysCompleted} ✅"
+                )
                 StatItem(
                     label = "Racha actual",
                     value = "${statistics.currentStreak} 🔥"
@@ -365,6 +369,27 @@ private fun TodayChallengeCardPreview() {
             ),
             currencyScale = CurrencyScale.COLOMBIA,
             onComplete = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun StatisticCardPreview() {
+        val statistics = Statistics(
+            totalSaved = 1000,
+            monthSaved = 300,
+            daysCompleted = 1,
+            daysRemaining = 365,
+            currentStreak = 1,
+            longestStreak = 1,
+            progressPercentage = 100f,
+
+            )
+    Saving365Theme {
+        StatisticsCard(
+            statistics = statistics,
+            currencyScale = CurrencyScale.COLOMBIA
         )
     }
 }

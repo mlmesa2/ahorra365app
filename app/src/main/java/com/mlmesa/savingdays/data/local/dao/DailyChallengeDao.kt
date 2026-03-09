@@ -58,6 +58,12 @@ interface DailyChallengeDao {
      */
     @Query("SELECT SUM(amount) FROM daily_challenges WHERE isCompleted = 1")
     fun getTotalSaved(): Flow<Int?>
+
+    /**
+     * Get total amount saved for a month
+     */
+    @Query("SELECT SUM(amount) FROM daily_challenges WHERE year = :year AND date >= :startDate AND date <= :endDate AND isCompleted = 1")
+    fun getTotalSavedForMonth(year: Int, startDate: LocalDate, endDate: LocalDate): Flow<Int?>
     
     /**
      * Insert a new challenge
