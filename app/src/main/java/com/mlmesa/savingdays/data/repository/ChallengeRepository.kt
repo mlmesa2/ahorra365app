@@ -94,6 +94,36 @@ class ChallengeRepository @Inject constructor(
         return dailyChallengeDao.getTotalSavedForMonth(year,  startDate, endDate)
      }
 
+    /**
+     * Get count of completed challenges for a month
+     */
+    suspend fun getCompletedCountForMonth(year: Int, month: Int): Int {
+        val startDate = LocalDate.of(year, month, 1)
+        val endDate = startDate.plusMonths(1).minusDays(1)
+        return dailyChallengeDao.getCompletedCountForMonth(year, startDate, endDate)
+    }
+
+    /**
+     * Get total saved for a specific year
+     */
+    suspend fun getTotalSavedForYear(year: Int): Int {
+        return dailyChallengeDao.getTotalSavedForYear(year)
+    }
+
+    /**
+     * Get all distinct years with challenges
+     */
+    suspend fun getDistinctYears(): List<Int> {
+        return dailyChallengeDao.getDistinctYears()
+    }
+
+    /**
+     * Get all challenges amount for a specific year
+     */
+    fun getChallengesAmountForYear(year: Int): Flow<Int?> {
+        return dailyChallengeDao.getChallengesAmountForYear(year)
+    }
+
     
     /**
      * Insert a new challenge

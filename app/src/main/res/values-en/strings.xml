@@ -33,4 +33,15 @@
     <string name="country_name_peru">Peru (PEN)</string>
     <string name="country_name_great_britain">Great Britain (GBP)</string>
     <string name="country_name_generic">Generic</string>
+
+    <!--StatisticsScreenStrings: -->
+    <string name="no_data_year">No data for this year</string>
+    <string name="statistics_screen_title">Statistics</string>
+    <string name="summary_card_total_saved">Total saved</string>
+    <string name="summary_card_best_month">Best month</string>
+    <string name="monthly_chart_title">Monthly savings</string>
+    <string name="summary_card_yearly_title">Yearly savings</string>
+    <string name="total_saved">Total saved</string>
+    <string name="total_to_save">Total to save</string>
+    <string name="final_goal">Final goal: %1$s</string>
 </resources>

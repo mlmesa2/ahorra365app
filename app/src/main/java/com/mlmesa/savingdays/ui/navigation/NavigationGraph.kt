@@ -10,6 +10,7 @@ import com.mlmesa.savingdays.ui.calendar.CalendarScreen
 import com.mlmesa.savingdays.ui.home.HomeScreen
 import com.mlmesa.savingdays.ui.onboarding.OnboardingScreen
 import com.mlmesa.savingdays.ui.settings.SettingsScreen
+import com.mlmesa.savingdays.ui.statistics.StatisticsScreen
 
 /**
  * Navigation graph for the app
@@ -41,6 +42,10 @@ fun NavigationGraph(
         
         composable(Screen.Calendar.route) {
             CalendarScreen()
+        }
+
+        composable(Screen.Statistics.route) {
+            StatisticsScreen()
         }
         
         composable(Screen.Achievements.route) {

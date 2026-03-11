@@ -20,6 +20,7 @@ fun BottomNavigationBar(
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Calendar,
+        BottomNavItem.Statistics,
         BottomNavItem.Achievements,
         BottomNavItem.Settings
     )
@@ -68,6 +69,12 @@ sealed class BottomNavItem(
         screen = Screen.Calendar,
         title = "Calendario",
         icon = Icons.Default.DateRange
+    )
+
+    object Statistics : BottomNavItem(
+        screen = Screen.Statistics,
+        title = "Estadísticas",
+        icon = Icons.Default.BarChart
     )
     
     object Achievements : BottomNavItem(

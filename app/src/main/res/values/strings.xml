@@ -32,4 +32,15 @@
     <string name="country_name_peru">Perú (PEN)</string>
     <string name="country_name_great_britain">Reino Unido (GBP)</string>
     <string name="country_name_generic">Genérico</string>
+
+    <!--StatisticsScreenStrings: -->
+    <string name="no_data_year">No hay datos para este año</string>
+    <string name="statistics_screen_title">Estadísticas</string>
+    <string name="summary_card_total_saved">Total ahorrado</string>
+    <string name="summary_card_best_month">Mejor mes</string>
+    <string name="monthly_chart_title">Ahorro mensual</string>
+    <string name="summary_card_yearly_title">Ahorro anual</string>
+    <string name="total_saved">Total ahorrado</string>
+    <string name="total_to_save">Total por ahorrar</string>
+    <string name="final_goal">Meta final: %1$s</string>
 </resources>

@@ -6,6 +6,7 @@ package com.mlmesa.savingdays.domain.model
 data class Statistics(
     val totalSaved: Int,
     val monthSaved: Int,
+    val totalToComplete: Int,
     val daysCompleted: Int,
     val daysRemaining: Int,
     val currentStreak: Int,

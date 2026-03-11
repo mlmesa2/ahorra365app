@@ -24,8 +24,9 @@ class GetStatisticsUseCase @Inject constructor(
             repository.getTotalSaved(),
             repository.getTotalSavedForMonth(year = year, month = month),
             repository.getCompletedCount(),
+            repository.getChallengesAmountForYear(year = year),
             preferencesRepository.userPreferencesFlow
-        ) { totalSaved, monthSaved, completedCount, preferences ->
+        ) { totalSaved, monthSaved, completedCount, amountsForYear, preferences ->
             val total = totalSaved ?: 0
             val remaining = Statistics.TOTAL_DAYS - completedCount
             val progressPercentage = (completedCount.toFloat() / Statistics.TOTAL_DAYS) * 100f
@@ -33,6 +34,7 @@ class GetStatisticsUseCase @Inject constructor(
             Statistics(
                 totalSaved = total,
                 monthSaved = monthSaved ?: 0,
+                totalToComplete = amountsForYear ?: 0,
                 daysCompleted = completedCount,
                 daysRemaining = remaining,
                 currentStreak = preferences.currentStreak,

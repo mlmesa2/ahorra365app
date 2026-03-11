@@ -8,6 +8,7 @@ firebaseBom = "34.7.0"
 hilt= "2.57.2"
 hiltExt = "1.3.0"
 hiltNavigationCompose = "1.3.0"
+jetco = "1.1.0-beta"
 kotlin = "2.3.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -43,6 +44,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+jetco-ui = { module = "com.developerstring.jetco:ui", version.ref = "jetco" }
 app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }

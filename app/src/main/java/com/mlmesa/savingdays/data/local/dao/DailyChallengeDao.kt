@@ -100,4 +100,28 @@ interface DailyChallengeDao {
      */
     @Query("SELECT * FROM daily_challenges ORDER BY date DESC LIMIT 1")
     suspend fun getLatestChallenge(): DailyChallenge?
+
+    /**
+     * Get count of completed challenges for a specific month
+     */
+    @Query("SELECT COUNT(*) FROM daily_challenges WHERE year = :year AND date >= :startDate AND date <= :endDate AND isCompleted = 1")
+    suspend fun getCompletedCountForMonth(year: Int, startDate: LocalDate, endDate: LocalDate): Int
+
+    /**
+     * Get total amount saved for a specific year
+     */
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM daily_challenges WHERE year = :year AND isCompleted = 1")
+    suspend fun getTotalSavedForYear(year: Int): Int
+
+    /**
+     * Get all distinct years that have challenges
+     */
+    @Query("SELECT DISTINCT year FROM daily_challenges ORDER BY year ASC")
+    suspend fun getDistinctYears(): List<Int>
+
+    /**
+     * Get all the challenges amount for a specific year
+     */
+    @Query("SELECT SUM(amount) FROM daily_challenges WHERE year = :year")
+    fun getChallengesAmountForYear(year: Int): Flow<Int?>
 }

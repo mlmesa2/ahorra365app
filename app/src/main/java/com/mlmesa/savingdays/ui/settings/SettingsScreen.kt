@@ -540,6 +540,7 @@ private fun SettingPreview() {
         val statistics = Statistics(
             totalSaved = 1000,
             monthSaved = 300,
+            totalToComplete = 36500,
             daysCompleted = 1,
             daysRemaining = 365,
             currentStreak = 1,
