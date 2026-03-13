@@ -40,7 +40,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,13 +50,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mlmesa.savingdays.data.model.CurrencyScale
+import com.mlmesa.savingdays.ui.theme.Saving365Theme
 
 /**
- * Main Onboarding Screen with 4 pages
+ * Main Onboarding Screen with 4 pages (Stateful)
  */
 @Composable
 fun OnboardingScreen(
@@ -76,7 +77,34 @@ fun OnboardingScreen(
         }
     }
 
-    Scaffold { paddingValues ->
+    OnboardingContent(
+        currentPage = currentPage,
+        selectedScale = selectedScale,
+        notificationsEnabled = notificationsEnabled,
+        onScaleSelected = viewModel::selectCurrencyScale,
+        onNotificationsToggle = viewModel::setNotificationsEnabled,
+        onPrevious = viewModel::previousPage,
+        onNext = viewModel::nextPage,
+        onFinish = viewModel::completeOnboarding
+    )
+}
+
+/**
+ * Stateless Onboarding Content for easier testing and previews
+ */
+@Composable
+fun OnboardingContent(
+    currentPage: Int,
+    selectedScale: CurrencyScale,
+    notificationsEnabled: Boolean,
+    onScaleSelected: (CurrencyScale) -> Unit,
+    onNotificationsToggle: (Boolean) -> Unit,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    onFinish: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(modifier = modifier) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,11 +137,11 @@ fun OnboardingScreen(
                     1 -> HowItWorksPage()
                     2 -> CountrySelectionPage(
                         selectedScale = selectedScale,
-                        onScaleSelected = { viewModel.selectCurrencyScale(it) }
+                        onScaleSelected = onScaleSelected
                     )
                     3 -> NotificationsPage(
                         notificationsEnabled = notificationsEnabled,
-                        onNotificationsToggle = { viewModel.setNotificationsEnabled(it) }
+                        onNotificationsToggle = onNotificationsToggle
                     )
                 }
             }
@@ -121,9 +149,9 @@ fun OnboardingScreen(
             // Navigation buttons
             NavigationButtons(
                 currentPage = currentPage,
-                onPrevious = { viewModel.previousPage() },
-                onNext = { viewModel.nextPage() },
-                onFinish = { viewModel.completeOnboarding() }
+                onPrevious = onPrevious,
+                onNext = onNext,
+                onFinish = onFinish
             )
         }
     }
@@ -464,5 +492,73 @@ private fun OnboardingPageLayout(
         Spacer(modifier = Modifier.height(24.dp))
 
         content()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingWelcomePreview() {
+    Saving365Theme {
+        OnboardingContent(
+            currentPage = 0,
+            selectedScale = CurrencyScale.MEXICO,
+            notificationsEnabled = false,
+            onScaleSelected = {},
+            onNotificationsToggle = {},
+            onPrevious = {},
+            onNext = {},
+            onFinish = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingHowItWorksPreview() {
+    Saving365Theme {
+        OnboardingContent(
+            currentPage = 1,
+            selectedScale = CurrencyScale.MEXICO,
+            notificationsEnabled = false,
+            onScaleSelected = {},
+            onNotificationsToggle = {},
+            onPrevious = {},
+            onNext = {},
+            onFinish = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingCountryPreview() {
+    Saving365Theme {
+        OnboardingContent(
+            currentPage = 2,
+            selectedScale = CurrencyScale.MEXICO,
+            notificationsEnabled = false,
+            onScaleSelected = {},
+            onNotificationsToggle = {},
+            onPrevious = {},
+            onNext = {},
+            onFinish = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingNotificationsPreview() {
+    Saving365Theme {
+        OnboardingContent(
+            currentPage = 3,
+            selectedScale = CurrencyScale.MEXICO,
+            notificationsEnabled = true,
+            onScaleSelected = {},
+            onNotificationsToggle = {},
+            onPrevious = {},
+            onNext = {},
+            onFinish = {}
+        )
     }
 }
