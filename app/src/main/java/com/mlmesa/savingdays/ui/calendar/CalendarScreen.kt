@@ -44,8 +44,36 @@ fun CalendarScreen(
     val monthChallenges by viewModel.monthChallenges.collectAsStateWithLifecycle()
     val selectedChallenge by viewModel.selectedChallenge.collectAsStateWithLifecycle()
     val currencyScale by viewModel.currencyScale.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+
+    CalendarScreen(
+        currentYearMonth = currentYearMonth,
+        monthChallenges = monthChallenges,
+        selectedChallenge = selectedChallenge,
+        currencyScale = currencyScale,
+        previousMonth = viewModel::previousMonth,
+        nextMonth = viewModel::nextMonth,
+        goToToday = viewModel::goToToday,
+        selectChallenge = viewModel::selectChallenge,
+        completeChallenge = viewModel::completeChallenge
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CalendarScreen(
+    modifier: Modifier = Modifier,
+    currentYearMonth: YearMonth,
+    monthChallenges: List<DailyChallenge>,
+    selectedChallenge: DailyChallenge?,
+    currencyScale: CurrencyScale,
+    previousMonth: () -> Unit,
+    nextMonth: () -> Unit,
+    goToToday: () -> Unit,
+    selectChallenge: (LocalDate) -> Unit,
+    completeChallenge: (DailyChallenge) -> Unit
+) {
     var isVisibleData by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -55,19 +83,19 @@ fun CalendarScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        viewModel.previousMonth()
+                        previousMonth()
                         isVisibleData = false
                     }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Mes anterior")
                     }
                     IconButton(onClick = {
-                        viewModel.goToToday()
+                        goToToday()
                         isVisibleData = true
                     }) {
                         Icon(Icons.Default.Today, contentDescription = "Hoy")
                     }
                     IconButton(onClick = {
-                        viewModel.nextMonth()
+                        nextMonth()
                         isVisibleData = false
                     }) {
                         Icon(Icons.Default.ArrowForward, contentDescription = "Siguiente mes")
@@ -87,7 +115,7 @@ fun CalendarScreen(
                 yearMonth = currentYearMonth,
                 challenges = monthChallenges,
                 onDayClick = { date ->
-                    viewModel.selectChallenge(date)
+                    selectChallenge(date)
                     isVisibleData = true
                 }
             )
@@ -101,7 +129,7 @@ fun CalendarScreen(
                     challenge = challenge,
                     currencyScale = currencyScale,
                     isVisible = isVisibleData,
-                    onComplete = { viewModel.completeChallenge(it) }
+                    onComplete = { completeChallenge(it) }
                 )
             }
 
@@ -441,4 +469,24 @@ private fun DayCellPreview() {
             challenge = challenge
         ) { }
     }
+}
+
+@Preview
+@Composable
+private fun CalendarScreenPreview() {
+
+    Saving365Theme {
+        CalendarScreen(
+            currentYearMonth = YearMonth.now(),
+            monthChallenges = emptyList(),
+            selectedChallenge = null,
+            currencyScale = CurrencyScale.GENERIC,
+            previousMonth = {},
+            nextMonth = {},
+            goToToday = {},
+            selectChallenge = {},
+            completeChallenge = {},
+        )
+    }
+
 }

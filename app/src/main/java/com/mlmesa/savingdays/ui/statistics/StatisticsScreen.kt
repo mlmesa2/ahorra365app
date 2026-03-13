@@ -58,7 +58,6 @@ fun StatisticsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currencyScale by viewModel.currencyScale.collectAsStateWithLifecycle()
 
-
     StatisticsScreen(
         modifier = Modifier,
         uiState = uiState,

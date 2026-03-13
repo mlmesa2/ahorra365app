@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.mlmesa.savingdays.data.local.entity.Achievement
 import com.mlmesa.savingdays.data.local.entity.DailyChallenge
 import com.mlmesa.savingdays.domain.model.Statistics
 import com.mlmesa.savingdays.ui.components.ScreenTitle
@@ -48,11 +49,46 @@ fun HomeScreen(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val newAchievements by viewModel.newlyUnlockedAchievements.collectAsStateWithLifecycle()
 
+    HomeScreen(
+        todayChallenge = todayChallenge,
+        statistics = statistics,
+        motivationalMessage = motivationalMessage,
+        currencySymbol = currencySymbol,
+        currencyScale = currencyScale,
+        notificationIsEnabled = notificationIsEnabled,
+        isLoading = isLoading,
+        newAchievements = newAchievements,
+        clearNewAchievements = viewModel::clearNewAchievements,
+        toggleNotificationOnOff = viewModel::toggleNotificationOnOff,
+        refresh = viewModel::refresh,
+        completeChallenge = viewModel::completeChallenge
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    todayChallenge: DailyChallenge?,
+    statistics: Statistics?,
+    motivationalMessage: String,
+    currencySymbol: String,
+    currencyScale: CurrencyScale,
+    notificationIsEnabled: Boolean,
+    isLoading: Boolean,
+    newAchievements: List<Achievement>,
+    clearNewAchievements: () -> Unit,
+    toggleNotificationOnOff: (Boolean) -> Unit,
+    refresh: () -> Unit,
+    completeChallenge: () -> Unit
+) {
+
+
     // Show achievement dialog if there are new achievements
     if (newAchievements.isNotEmpty()) {
         AchievementUnlockedDialog(
             achievements = newAchievements,
-            onDismiss = { viewModel.clearNewAchievements() }
+            onDismiss = { clearNewAchievements() }
         )
     }
 
@@ -63,7 +99,7 @@ fun HomeScreen(
                     Log.d("MYTAG", "HomeScreen: permission granted")
                 } else {
                     Log.d("MYTAG", "HomeScreen: permission denied")
-                    viewModel.toggleNotificationOnOff(false)
+                    toggleNotificationOnOff(false)
                 }
             }
         )
@@ -74,7 +110,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { ScreenTitle(title = "Ahorra365") },
                 actions = {
-                    IconButton(onClick = { viewModel.refresh() }) {
+                    IconButton(onClick = { refresh() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Actualizar")
                     }
                 }
@@ -112,7 +148,7 @@ fun HomeScreen(
                         TodayChallengeCard(
                             challenge = challenge,
                             currencyScale = currencyScale,
-                            onComplete = { viewModel.completeChallenge() }
+                            onComplete = { completeChallenge() }
                         )
                     } ?: run {
                         Card(
@@ -349,7 +385,35 @@ fun AchievementUnlockedDialog(
 @Composable
 fun HomeScreenPreview() {
     Saving365Theme {
-        HomeScreen()
+        HomeScreen(
+            todayChallenge = DailyChallenge(
+                dayNumber = 125,
+                amount = 125,
+                date = LocalDate.now(),
+                isCompleted = false,
+                year = 2026
+            ),
+            statistics = Statistics(
+                totalSaved = 5000,
+                monthSaved = 1200,
+                totalToComplete = 66795,
+                daysCompleted = 45,
+                daysRemaining = 320,
+                currentStreak = 5,
+                longestStreak = 12,
+                progressPercentage = 15f
+            ),
+            motivationalMessage = "¡Vas por buen camino! Cada moneda cuenta.",
+            currencySymbol = "$",
+            currencyScale = CurrencyScale.MEXICO,
+            notificationIsEnabled = false,
+            isLoading = false,
+            newAchievements = emptyList(),
+            clearNewAchievements = {},
+            toggleNotificationOnOff = {},
+            refresh = {},
+            completeChallenge = {}
+        )
     }
 }
 

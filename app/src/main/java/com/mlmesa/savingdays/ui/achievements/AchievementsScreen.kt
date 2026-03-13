@@ -10,8 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mlmesa.savingdays.data.local.entity.Achievement
+import com.mlmesa.savingdays.data.local.entity.AchievementType
+import com.mlmesa.savingdays.ui.theme.Saving365Theme
 
 /**
  * Achievements screen showing all unlockable achievements
@@ -25,7 +29,33 @@ fun AchievementsScreen(
     val unlockedCount by viewModel.unlockedCount.collectAsState()
     val completedCount by viewModel.completedCount.collectAsState()
     val currentStreak by viewModel.currentStreak.collectAsState()
-    
+
+    AchievementsScreen(
+        achievements = achievements,
+        unlockedCount = unlockedCount,
+        completedCount = completedCount,
+        currentStreak = currentStreak,
+        getAchievementTitle = viewModel::getAchievementTitle,
+        getAchievementDescription = viewModel::getAchievementDescription,
+        getAchievementIcon = viewModel::getAchievementIcon,
+        getProgress = viewModel::getProgress
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AchievementsScreen(
+    modifier: Modifier = Modifier,
+    achievements: List<Achievement>,
+    unlockedCount: Int,
+    completedCount: Int,
+    currentStreak: Int,
+    getAchievementTitle: (AchievementType) -> String,
+    getAchievementDescription: (AchievementType) -> String,
+    getAchievementIcon: (AchievementType) -> String,
+    getProgress: (AchievementType, Int, Int) -> Float
+) {
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -71,10 +101,10 @@ fun AchievementsScreen(
                 items(achievements) { achievement ->
                     AchievementCard(
                         achievement = achievement,
-                        title = viewModel.getAchievementTitle(achievement.type),
-                        description = viewModel.getAchievementDescription(achievement.type),
-                        icon = viewModel.getAchievementIcon(achievement.type),
-                        progress = viewModel.getProgress(achievement.type, completedCount, currentStreak)
+                        title = getAchievementTitle(achievement.type),
+                        description = getAchievementDescription(achievement.type),
+                        icon = getAchievementIcon(achievement.type),
+                        progress = getProgress(achievement.type, completedCount, currentStreak)
                     )
                 }
             }
@@ -84,7 +114,7 @@ fun AchievementsScreen(
 
 @Composable
 fun AchievementCard(
-    achievement: com.mlmesa.savingdays.data.local.entity.Achievement,
+    achievement: Achievement,
     title: String,
     description: String,
     icon: String,
@@ -151,5 +181,53 @@ fun AchievementCard(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ArchivementScreenPreview() {
+    val mockAchievements = AchievementType.entries.map { type ->
+        Achievement(
+            type = type,
+            isUnlocked = type == AchievementType.STREAK_7 || type == AchievementType.DAYS_30
+        )
+    }
+
+    Saving365Theme {
+        AchievementsScreen(
+            achievements = mockAchievements,
+            unlockedCount = 2,
+            completedCount = 45,
+            currentStreak = 10,
+            getAchievementTitle = { type ->
+                when (type) {
+                    AchievementType.STREAK_7 -> "Racha de 7 Días"
+                    AchievementType.DAYS_30 -> "30 Días Completados"
+                    AchievementType.DAYS_100 -> "100 Días Completados"
+                    AchievementType.HALF_COMPLETE -> "Mitad del Camino"
+                    AchievementType.COMPLETE -> "¡Reto Completado!"
+                }
+            },
+            getAchievementDescription = { "" },
+            getAchievementIcon = { type ->
+                when (type) {
+                    AchievementType.STREAK_7 -> "🔥"
+                    AchievementType.DAYS_30 -> "⭐"
+                    AchievementType.DAYS_100 -> "💎"
+                    AchievementType.HALF_COMPLETE -> "🏆"
+                    AchievementType.COMPLETE -> "👑"
+                }
+            },
+            getProgress = { type, completed, streak ->
+                when (type) {
+                    AchievementType.STREAK_7 -> (streak.toFloat() / 7f).coerceIn(0f, 1f)
+                    AchievementType.DAYS_30 -> (completed.toFloat() / 30f).coerceIn(0f, 1f)
+                    AchievementType.DAYS_100 -> (completed.toFloat() / 100f).coerceIn(0f, 1f)
+                    AchievementType.HALF_COMPLETE -> (completed.toFloat() / 183f).coerceIn(0f, 1f)
+                    AchievementType.COMPLETE -> (completed.toFloat() / 365f).coerceIn(0f, 1f)
+                }
+            }
+        )
     }
 }
