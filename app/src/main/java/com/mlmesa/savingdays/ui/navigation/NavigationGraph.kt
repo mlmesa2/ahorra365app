@@ -1,10 +1,12 @@
 package com.mlmesa.savingdays.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.mlmesa.savingdays.ui.achievements.AchievementsScreen
 import com.mlmesa.savingdays.ui.calendar.CalendarScreen
 import com.mlmesa.savingdays.ui.home.HomeScreen
@@ -18,42 +20,40 @@ import com.mlmesa.savingdays.ui.statistics.StatisticsScreen
 @Composable
 fun NavigationGraph(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    startDestination: String = Screen.Home.route
+    navigationState: NavigationState,
+    navigator: Navigator
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier
-    ) {
-        composable(Screen.Onboarding.route) {
-            OnboardingScreen(
-                onOnboardingComplete = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Onboarding.route) { inclusive = true }
-                    }
+
+    NavDisplay(
+        modifier = modifier,
+        onBack = navigator::goBack,
+        entries = navigationState.toEntries(
+            entryProvider = entryProvider {
+                entry<Screen.Home> {
+                    HomeScreen()
                 }
-            )
-        }
+                entry<Screen.Onboarding> {
+                    OnboardingScreen(
+                        onOnboardingComplete = {
+                            navigator.navigate(Screen.Home)
+                        }
+                    )
+                }
+                entry<Screen.Calendar> {
+                    CalendarScreen()
+                }
+                entry<Screen.Statistics> {
+                    StatisticsScreen()
+                }
 
-        composable(Screen.Home.route) {
-            HomeScreen()
-        }
-        
-        composable(Screen.Calendar.route) {
-            CalendarScreen()
-        }
+                entry<Screen.Achievements> {
+                    AchievementsScreen()
+                }
 
-        composable(Screen.Statistics.route) {
-            StatisticsScreen()
-        }
-        
-        composable(Screen.Achievements.route) {
-            AchievementsScreen()
-        }
-        
-        composable(Screen.Settings.route) {
-            SettingsScreen()
-        }
-    }
+                entry<Screen.Settings> {
+                    SettingsScreen()
+                }
+            }
+        )
+    )
 }
