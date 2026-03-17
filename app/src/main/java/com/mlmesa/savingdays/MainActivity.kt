@@ -8,6 +8,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -16,11 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -33,8 +37,11 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
 import com.mlmesa.savingdays.ui.components.BottomNavigationBar
+import com.mlmesa.savingdays.ui.components.TOP_LEVEL_DESTINATION
 import com.mlmesa.savingdays.ui.navigation.NavigationGraph
+import com.mlmesa.savingdays.ui.navigation.Navigator
 import com.mlmesa.savingdays.ui.navigation.Screen
+import com.mlmesa.savingdays.ui.navigation.rememberNavigationState
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.worker.DailyNotificationReminder
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,6 +90,7 @@ class MainActivity : ComponentActivity() {
         checkForAppUpdate()
         setContent {
             Saving365Theme {
+
                 val showUpdateDialog by mainViewModel.showUpdateDialog.collectAsStateWithLifecycle()
                 val userPreferences by mainViewModel.userPreferences.collectAsStateWithLifecycle()
 
@@ -92,10 +100,14 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val onboardingCompleted = userPreferences!!.onboardingCompleted
-                val startDestination = if (onboardingCompleted) {
-                    Screen.Home.route
-                } else {
-                    Screen.Onboarding.route
+
+                val navigationState = rememberNavigationState(
+                    startRoute = if (onboardingCompleted) Screen.Home else Screen.Onboarding,
+                    topLevelRoutes = TOP_LEVEL_DESTINATION.keys
+                )
+                // Fix: Key navigator by navigationState so it updates when startDestination changes
+                val navigator = remember(navigationState) {
+                    Navigator(navigationState)
                 }
 
                 if (showUpdateDialog) {
@@ -117,26 +129,33 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                val navController = rememberNavController()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
+                val currentRoute = navigator.state.stacksInUse.lastOrNull()
                 Log.d("MYTAG", "onCreate: Current route: $currentRoute")
                 Log.d("MYTAG", "onCreate: onBoardingcomplete: ${userPreferences!!.onboardingCompleted}")
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        // Hide bottom bar during onboarding. Use null check to allow initial composition but
-                        // rely on reactive state update
-                        if (currentRoute != Screen.Onboarding.route && currentRoute != null) {
-                            BottomNavigationBar(navController = navController)
+                        // Hide bottom bar during onboarding.
+                        val isBottomBarVisible = currentRoute != Screen.Onboarding && currentRoute != null
+                        AnimatedVisibility(
+                            visible = isBottomBarVisible,
+                            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+                        ) {
+                            BottomNavigationBar(
+                                selectedKey = navigationState.topLevelRoute,
+                                onSelectKey = {
+                                    navigator.navigate(it)
+                                }
+                            )
                         }
                     }
                 ) { innerPadding ->
                     NavigationGraph(
                         modifier = Modifier.padding(innerPadding),
-                        navController = navController,
-                        startDestination = startDestination
+                        navigationState = navigationState,
+                        navigator = navigator
                     )
                 }
             }

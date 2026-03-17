@@ -43,4 +43,11 @@
     <string name="total_saved">Total ahorrado</string>
     <string name="total_to_save">Total por ahorrar</string>
     <string name="final_goal">Meta final: %1$s</string>
+
+    <!-- Navbar navigation titles-->
+    <string name="navbar_name_home">Inicio</string>
+    <string name="navbar_name_calendar">Calendario</string>
+    <string name="navbar_name_statistics">Estadísticas</string>
+    <string name="navbar_name_achievements">Logros</string>
+    <string name="navbar_name_settings">Ajustes</string>
 </resources>

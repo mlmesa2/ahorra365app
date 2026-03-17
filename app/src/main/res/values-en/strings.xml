@@ -44,4 +44,11 @@
     <string name="total_saved">Total saved</string>
     <string name="total_to_save">Total to save</string>
     <string name="final_goal">Final goal: %1$s</string>
+
+    <!-- Navbar navigation titles-->
+    <string name="navbar_name_home">Home</string>
+    <string name="navbar_name_calendar">Calendar</string>
+    <string name="navbar_name_statistics">Statistics</string>
+    <string name="navbar_name_achievements">Achievements</string>
+    <string name="navbar_name_settings">Settings</string>
 </resources>
