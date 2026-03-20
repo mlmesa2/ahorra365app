@@ -13,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,7 @@ import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 import com.mlmesa.savingdays.util.NotificationPermissionRequest
 import com.mlmesa.savingdays.data.model.CurrencyScale
+import com.mlmesa.savingdays.R
 import java.time.LocalDate
 
 /**
@@ -42,7 +44,7 @@ fun HomeScreen(
 ) {
     val todayChallenge by viewModel.todayChallenge.collectAsStateWithLifecycle()
     val statistics by viewModel.statistics.collectAsStateWithLifecycle()
-    val motivationalMessage by viewModel.motivationalMessage.collectAsStateWithLifecycle()
+    val motivationalMessageRes by viewModel.motivationalMessageRes.collectAsStateWithLifecycle()
     val currencySymbol by viewModel.currencySymbol.collectAsStateWithLifecycle()
     val currencyScale by viewModel.currencyScale.collectAsStateWithLifecycle()
     val notificationIsEnabled by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
@@ -52,7 +54,7 @@ fun HomeScreen(
     HomeScreen(
         todayChallenge = todayChallenge,
         statistics = statistics,
-        motivationalMessage = motivationalMessage,
+        motivationalMessageRes = motivationalMessageRes,
         currencySymbol = currencySymbol,
         currencyScale = currencyScale,
         notificationIsEnabled = notificationIsEnabled,
@@ -71,7 +73,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     todayChallenge: DailyChallenge?,
     statistics: Statistics?,
-    motivationalMessage: String,
+    motivationalMessageRes: Int,
     currencySymbol: String,
     currencyScale: CurrencyScale,
     notificationIsEnabled: Boolean,
@@ -108,10 +110,13 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { ScreenTitle(title = "Ahorra365") },
+                title = { ScreenTitle(title = stringResource(R.string.home_screen_title)) },
                 actions = {
                     IconButton(onClick = { refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Actualizar")
+                        Icon(
+                            Icons.Default.Refresh, 
+                            contentDescription = stringResource(R.string.home_screen_refresh_content_description)
+                        )
                     }
                 }
             )
@@ -137,7 +142,7 @@ fun HomeScreen(
                 ) {
                     // Motivational message
                     Text(
-                        text = motivationalMessage,
+                        text = stringResource(motivationalMessageRes),
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary
@@ -159,7 +164,7 @@ fun HomeScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "No hay reto disponible para hoy",
+                                    text = stringResource(R.string.home_screen_no_challenge_available),
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }
@@ -181,7 +186,7 @@ fun HomeScreen(
 
 @Composable
 fun TodayChallengeCard(
-    challenge: com.mlmesa.savingdays.data.local.entity.DailyChallenge,
+    challenge: DailyChallenge,
     currencyScale: CurrencyScale,
     onComplete: () -> Unit
 ) {
@@ -203,7 +208,7 @@ fun TodayChallengeCard(
         ) {
             // Day number
             Text(
-                text = "Día ${challenge.dayNumber} de 365",
+                text = stringResource(R.string.home_screen_challenge_day_number, challenge.dayNumber),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -227,7 +232,7 @@ fun TodayChallengeCard(
             )
             
             Text(
-                text = "Monto del día",
+                text = stringResource(R.string.home_screen_daily_amount_label),
                 style = MaterialTheme.typography.bodyLarge
             )
             
@@ -246,7 +251,7 @@ fun TodayChallengeCard(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "¡Completado!",
+                        text = stringResource(R.string.home_screen_challenge_completed),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -256,7 +261,7 @@ fun TodayChallengeCard(
                     onClick = onComplete,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Marcar como completado")
+                    Text(stringResource(R.string.home_screen_mark_as_completed))
                 }
             }
         }
@@ -276,7 +281,7 @@ fun StatisticsCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Progreso",
+                text = stringResource(R.string.home_screen_statistics_progress_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -291,7 +296,10 @@ fun StatisticsCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${statistics.progressPercentage.toInt()}% completado",
+                    text = stringResource(
+                        R.string.home_screen_statistics_progress_percentage, 
+                        statistics.progressPercentage.toInt()
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -305,11 +313,11 @@ fun StatisticsCard(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 StatItem(
-                    label = "Total ahorrado",
+                    label = stringResource(R.string.home_screen_statistics_total_saved),
                     value = currencyScale.formatAmount(statistics.totalSaved)
                 )
                 StatItem(
-                    label = "Ahorrado este mes",
+                    label = stringResource(R.string.home_screen_statistics_month_saved),
                     value = "${statistics.monthSaved}"
                 )
             }
@@ -319,15 +327,15 @@ fun StatisticsCard(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 StatItem(
-                    label = "Días completados",
+                    label = stringResource(R.string.home_screen_statistics_days_completed),
                     value = "${statistics.daysCompleted} ✅"
                 )
                 StatItem(
-                    label = "Racha actual",
+                    label = stringResource(R.string.home_screen_statistics_current_streak),
                     value = "${statistics.currentStreak} 🔥"
                 )
                 StatItem(
-                    label = "Mejor racha",
+                    label = stringResource(R.string.home_screen_statistics_longest_streak),
                     value = "${statistics.longestStreak} 🏆"
                 )
             }
@@ -360,12 +368,12 @@ fun StatItem(
 
 @Composable
 fun AchievementUnlockedDialog(
-    achievements: List<com.mlmesa.savingdays.data.local.entity.Achievement>,
+    achievements: List<Achievement>,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("¡Logro Desbloqueado!") },
+        title = { Text(stringResource(R.string.home_screen_achievement_dialog_title)) },
         text = {
             Column {
                 achievements.forEach { achievement ->
@@ -375,11 +383,12 @@ fun AchievementUnlockedDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("¡Genial!")
+                Text(stringResource(R.string.home_screen_achievement_dialog_confirm))
             }
         }
     )
 }
+
 
 @PreviewLightDark
 @Composable
@@ -403,7 +412,7 @@ fun HomeScreenPreview() {
                 longestStreak = 12,
                 progressPercentage = 15f
             ),
-            motivationalMessage = "¡Vas por buen camino! Cada moneda cuenta.",
+            motivationalMessageRes = R.string.motivational_message_1,
             currencySymbol = "$",
             currencyScale = CurrencyScale.MEXICO,
             notificationIsEnabled = false,

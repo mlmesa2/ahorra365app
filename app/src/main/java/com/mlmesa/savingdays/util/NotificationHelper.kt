@@ -44,25 +44,30 @@ object NotificationHelper {
         motivationalMessage: String
     ) {
         createNotificationChannel(context)
-        
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        
+
+        val intent = getIntent(context)
+
+        val pendingIntent = getPendingIntent(context, intent)
+
         val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("¡Reto del día!")
-            .setContentText("Ahorra $currencySymbol$amount hoy. $motivationalMessage")
+            .setContentTitle(context.getString(R.string.notification_title_text))
+            .setContentText(
+                context.getString(
+                    R.string.notification_content_text,
+                    currencySymbol,
+                    amount,
+                    motivationalMessage
+                ))
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("Ahorra $currencySymbol$amount hoy. $motivationalMessage")
+                    .bigText(
+                        context.getString(
+                            R.string.notification_big_content_text,
+                            currencySymbol,
+                            amount,
+                            motivationalMessage
+                        ))
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
@@ -71,5 +76,25 @@ object NotificationHelper {
         
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(Constants.NOTIFICATION_ID, notification)
+    }
+
+    private fun getIntent(context: Context): Intent {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        return intent
+    }
+
+    private fun getPendingIntent(
+        context: Context,
+        intent: Intent
+    ): PendingIntent? {
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        return pendingIntent
     }
 }

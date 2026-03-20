@@ -48,9 +48,9 @@ class HomeViewModel @Inject constructor(
     private val _statistics = MutableStateFlow<Statistics?>(null)
     val statistics: StateFlow<Statistics?> = _statistics.asStateFlow()
     
-    // State for motivational message
-    private val _motivationalMessage = MutableStateFlow(MotivationalMessages.getRandom())
-    val motivationalMessage: StateFlow<String> = _motivationalMessage.asStateFlow()
+    // State for motivational message (resource ID)
+    private val _motivationalMessageRes = MutableStateFlow(MotivationalMessages.getRandom())
+    val motivationalMessageRes: StateFlow<Int> = _motivationalMessageRes.asStateFlow()
     
     // State for currency symbol
     val currencySymbol: StateFlow<String> = preferencesRepository.userPreferencesFlow
@@ -154,7 +154,7 @@ class HomeViewModel @Inject constructor(
                     }
                     
                     // Refresh motivational message
-                    _motivationalMessage.value = MotivationalMessages.getRandom()
+                    _motivationalMessageRes.value = MotivationalMessages.getRandom()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -167,7 +167,7 @@ class HomeViewModel @Inject constructor(
      */
     fun refresh() {
         loadTodayChallenge()
-        _motivationalMessage.value = MotivationalMessages.getRandom()
+        _motivationalMessageRes.value = MotivationalMessages.getRandom()
     }
     
     /**

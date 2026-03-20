@@ -38,7 +38,7 @@ class ReminderReceiver : BroadcastReceiver() {
                         context = context,
                         amount = todayChallenge.amount,
                         currencySymbol = preferences.currencySymbol,
-                        motivationalMessage = MotivationalMessages.getRandom()
+                        motivationalMessage = context.getString(MotivationalMessages.getRandom())
                     )
                 }
             }

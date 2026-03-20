@@ -1,6 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Saving 365</string>
+
+    <!--OnboardingStrings:-->
+    <string name="onboarding_button_before">Back</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_start">Start</string>
+
+    <!--- Onboarding Page 1 (Welcome) -->
+    <string name="onboarding_welcome_section_title">Welcome to Saving 365!</string>
+    <string name="onboarding_welcome_section_description">Your companion for the world\'s most popular annual saving challenge.</string>
+    <string name="onboarding_welcome_section_description_details">Save a different amount every day and by the end of the year you will have accumulated a significant sum.</string>
+
+    <!--- Onboarding Page 2 (How it works) -->
+    <string name="onboarding_howitworks_section_title">How it works?</string>
+    <string name="onboarding_howitworks_section_calendar_item_title">365 days, 365 amounts</string>
+    <string name="onboarding_howitworks_section_calendar_item_description">Each day of the year is assigned an amount from 1 to 365</string>
+    <string name="onboarding_howitworks_section_savings_item_title">Random order</string>
+    <string name="onboarding_howitworks_section_savings_item_description">Amounts appear in random order to make the challenge more fun</string>
+    <string name="onboarding_howitworks_section_progress_item_title">Track your progress</string>
+    <string name="onboarding_howitworks_section_progress_item_description">Every day you save, mark it as completed</string>
+
+    <!--- Onboarding Page 3 (Country Selection) -->
+    <string name="onboarding_country_section_title">Select your country</string>
+    <string name="onboarding_country_section_description">Amounts will be adjusted according to your local currency</string>
+    <string name="onboarding_country_item_range">Range: %1$s1 - %2$s</string>
+
+    <!--- Onboarding Page 4 (Notifications) -->
+    <string name="onboarding_notifications_section_title">Daily reminders</string>
+    <string name="onboarding_notifications_section_description">Receive a daily notification to remind you to save for the day.</string>
+    <string name="onboarding_notifications_card_title">Enable notifications</string>
+    <string name="onboarding_notifications_card_subtitle">Default time: 9:00 AM</string>
+    <string name="onboarding_notifications_footer_text">You can change this setting at any time from Settings.</string>
+
+    <!-- HomeScreen Strings -->
+    <string name="home_screen_title">Saving365</string>
+    <string name="home_screen_refresh_content_description">Refresh</string>
+    <string name="home_screen_no_challenge_available">No challenge available for today</string>
+    <string name="home_screen_challenge_day_number">Day %1$d of 365</string>
+    <string name="home_screen_daily_amount_label">Daily amount</string>
+    <string name="home_screen_challenge_completed">Completed!</string>
+    <string name="home_screen_mark_as_completed">Mark as completed</string>
+    <string name="home_screen_statistics_progress_title">Progress</string>
+    <string name="home_screen_statistics_progress_percentage">%1$d%% completed</string>
+    <string name="home_screen_statistics_total_saved">Total saved</string>
+    <string name="home_screen_statistics_month_saved">Saved this month</string>
+    <string name="home_screen_statistics_days_completed">Days completed</string>
+    <string name="home_screen_statistics_current_streak">Current streak</string>
+    <string name="home_screen_statistics_longest_streak">Best streak</string>
+    <string name="home_screen_achievement_dialog_title">Achievement Unlocked!</string>
+    <string name="home_screen_achievement_dialog_confirm">Great!</string>
+
+    <!-- Calendar Screen Strings -->
+    <string name="calendar_screen_previous_month">Previous month</string>
+    <string name="calendar_screen_today">Today</string>
+    <string name="calendar_screen_next_month">Next month</string>
+    <string name="calendar_screen_day_number">Day %1$d</string>
+    <string name="calendar_screen_date_label">Date: %1$s</string>
+    <string name="calendar_screen_amount_label">Amount: %1$s</string>
+    <string name="calendar_screen_amount_hidden">Amount: ???</string>
+    <string name="calendar_screen_amount_reveal_message">The amount will be revealed when this day arrives</string>
+    <string name="calendar_screen_status_completed">✓ Completed</string>
+    <string name="calendar_screen_status_pending">Pending</string>
+    <string name="calendar_screen_past_completion_message">You can mark this day as completed even if it has already passed</string>
+    <string name="calendar_screen_mark_completed">Mark as completed</string>
+    <string name="calendar_screen_close">Close</string>
+    <string name="calendar_screen_cancel">Cancel</string>
+
+    <!-- Achievements Screen Strings -->
+    <string name="achievements_screen_title">Achievements</string>
+    <string name="achievements_screen_summary_title">Achievements Unlocked</string>
+    <string name="achievements_screen_summary_count">%1$d / %2$d</string>
+    <string name="achievements_screen_unlocked_label">Unlocked!</string>
+    <string name="achievements_screen_progress_percentage">%1$d%%</string>
+
+    <!-- Achievement Titles and Descriptions -->
+    <string name="achievements_screen_streak_7_title">7-Day Streak</string>
+    <string name="achievements_screen_streak_7_description">Complete 7 consecutive days</string>
+    <string name="achievements_screen_days_30_title">30 Days Completed</string>
+    <string name="achievements_screen_days_30_description">Complete 30 days of the challenge</string>
+    <string name="achievements_screen_days_100_title">100 Days Completed</string>
+    <string name="achievements_screen_days_100_description">Complete 100 days of the challenge</string>
+    <string name="achievements_screen_half_complete_title">Halfway There</string>
+    <string name="achievements_screen_half_complete_description">Complete 50% of the challenge (183 days)</string>
+    <string name="achievements_screen_complete_title">Challenge Completed!</string>
+    <string name="achievements_screen_complete_description">Complete all 365 days of the challenge</string>
+
+    <!-- Settings Screen Strings -->
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_screen_notifications_section">Notifications</string>
+    <string name="settings_screen_notifications_enable">Enable notifications</string>
+    <string name="settings_screen_notifications_subtitle">Notifications for new challenges</string>
+    <string name="settings_screen_notifications_time">Notification time</string>
+    <string name="settings_screen_country_section">Country / Currency</string>
+    <string name="settings_screen_country_label">Country</string>
+    <string name="settings_screen_auto_reset_section">Auto-reset</string>
+    <string name="settings_screen_auto_reset_enable">Reset on January 1st</string>
+    <string name="settings_screen_auto_reset_subtitle">The challenge will restart automatically every year</string>
+    <string name="settings_screen_statistics_title">Statistics</string>
+    <string name="settings_screen_statistics_total_saved">Total saved: %1$s</string>
+    <string name="settings_screen_statistics_days_completed">Days completed: %1$d/%2$d</string>
+    <string name="settings_screen_statistics_progress">Progress: %1$d%%</string>
+    <string name="settings_screen_statistics_current_streak">Current streak: %1$d days</string>
+    <string name="settings_screen_statistics_longest_streak">Best streak: %1$d days</string>
+    <string name="settings_screen_reset_button">Reset challenge now</string>
+    <string name="settings_screen_about_section">About</string>
+    <string name="settings_screen_version">Version</string>
+    <string name="settings_screen_browser_not_found">No browser found to open the application.</string>
+    <string name="settings_screen_privacy_policy">Privacy Policy</string>
+    <string name="settings_screen_currency_dialog_title">Select currency</string>
+    <string name="settings_screen_currency_custom_label">Custom</string>
+    <string name="settings_screen_confirm">Confirm</string>
+    <string name="settings_screen_custom_dots">Custom…</string>
+    <string name="settings_screen_cancel">Cancel</string>
+    <string name="settings_screen_country_dialog_title">Select country</string>
+    <string name="settings_screen_country_change_warning">If you change country, the amounts will be adjusted to the new currency. Since you already have completed days, the final amount saved may vary from the original shown.</string>
+    <string name="settings_screen_time_dialog_title">Select time</string>
+    <string name="settings_screen_reset_dialog_title">Reset challenge?</string>
+    <string name="settings_screen_reset_dialog_text">This will delete all your current progress and you will start a new challenge. This action cannot be undone.</string>
+    <string name="settings_screen_reset_dialog_confirm">Reset</string>
+    <string name="settings_screen_permission_dialog_title">Notification permission</string>
+    <string name="settings_screen_permission_dialog_text">To grant notification permission, it is necessary to go to the app settings</string>
+    <string name="settings_screen_permission_dialog_confirm">Go to settings</string>
+
     <string name="january">January</string>
     <string name="february">February</string>
     <string name="march">March</string>
@@ -51,4 +173,47 @@
     <string name="navbar_name_statistics">Statistics</string>
     <string name="navbar_name_achievements">Achievements</string>
     <string name="navbar_name_settings">Settings</string>
+
+    <!-- App Updates -->
+    <string name="update_downloaded_title">Update downloaded</string>
+    <string name="update_downloaded_message">A new version of the app has been downloaded. Restart to install it.</string>
+    <string name="update_downloaded_confirm">Restart</string>
+
+    <!-- Notification Strings -->
+    <string name="notification_content_text">Save %1$s%2$d today. %3$s</string>
+    <string name="notification_title_text">Challenge of the day!</string>
+    <string name="notification_big_content_text">Save %1$s%2$d today. %3$s</string>
+
+    <!-- Motivational Messages -->
+    <string name="motivational_message_1">Every penny counts! 💰</string>
+    <string name="motivational_message_2">You\'re on the right track! 🌟</string>
+    <string name="motivational_message_3">Saving is the path to financial freedom 🚀</string>
+    <string name="motivational_message_4">Today is a great day to save! ☀️</string>
+    <string name="motivational_message_5">Small steps, big achievements 👣</string>
+    <string name="motivational_message_6">Your future self will thank you! 🙏</string>
+    <string name="motivational_message_7">Consistency is the key to success 🔑</string>
+    <string name="motivational_message_8">Keep it up, champ! 🏆</string>
+    <string name="motivational_message_9">Every day is a new opportunity 🌈</string>
+    <string name="motivational_message_10">Your effort is worth it! 💪</string>
+    <string name="motivational_message_11">Today\'s savings is tomorrow\'s security 🛡️</string>
+    <string name="motivational_message_12">You\'re building your future! 🏗️</string>
+    <string name="motivational_message_13">Discipline will take you far 🎯</string>
+    <string name="motivational_message_14">Don\'t give up, you\'re almost there! 🎉</string>
+    <string name="motivational_message_15">Your goals are closer than you think 🎁</string>
+    <string name="motivational_message_16">You\'re stronger than you think! 💎</string>
+    <string name="motivational_message_17">Success is the sum of small efforts 📈</string>
+    <string name="motivational_message_18">Today is your day to shine! ✨</string>
+    <string name="motivational_message_19">Perseverance always wins 🥇</string>
+    <string name="motivational_message_20">Trust the process! 🌱</string>
+    <string name="motivational_message_21">Every saving brings you closer to your dreams 💭</string>
+    <string name="motivational_message_22">You can handle this and more! 🦸</string>
+    <string name="motivational_message_23">Change begins with a decision 🔄</string>
+    <string name="motivational_message_24">Keep going, don\'t look back! 👀</string>
+    <string name="motivational_message_25">Your determination is admirable 🌟</string>
+    <string name="motivational_message_26">Today is the perfect day to move forward! 📅</string>
+    <string name="motivational_message_27">Consistency is your superpower 🦸‍♀️</string>
+    <string name="motivational_message_28">You\'re closer to your goal! 🎯</string>
+    <string name="motivational_message_29">Every day counts, every penny matters 💵</string>
+    <string name="motivational_message_30">You\'re an example of discipline! 👏</string>
+
 </resources>

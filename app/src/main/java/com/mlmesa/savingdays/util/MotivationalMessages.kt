@@ -1,59 +1,61 @@
 package com.mlmesa.savingdays.util
 
+import com.mlmesa.savingdays.R
+
 /**
  * Collection of motivational messages to display to users
  */
 object MotivationalMessages {
     
     private val messages = listOf(
-        "¡Cada peso cuenta! 💰",
-        "¡Vas por buen camino! 🌟",
-        "El ahorro es el camino a la libertad financiera 🚀",
-        "¡Hoy es un gran día para ahorrar! ☀️",
-        "Pequeños pasos, grandes logros 👣",
-        "¡Tu yo del futuro te lo agradecerá! 🙏",
-        "La constancia es la clave del éxito 🔑",
-        "¡Sigue así, campeón! 🏆",
-        "Cada día es una nueva oportunidad 🌈",
-        "¡Tu esfuerzo vale la pena! 💪",
-        "El ahorro de hoy es la seguridad de mañana 🛡️",
-        "¡Estás construyendo tu futuro! 🏗️",
-        "La disciplina te llevará lejos 🎯",
-        "¡No te rindas, ya casi llegas! 🎉",
-        "Tus metas están más cerca de lo que crees 🎁",
-        "¡Eres más fuerte de lo que piensas! 💎",
-        "El éxito es la suma de pequeños esfuerzos 📈",
-        "¡Hoy es tu día de brillar! ✨",
-        "La perseverancia siempre gana 🥇",
-        "¡Confía en el proceso! 🌱",
-        "Cada ahorro te acerca a tus sueños 💭",
-        "¡Tú puedes con esto y más! 🦸",
-        "El cambio comienza con una decisión 🔄",
-        "¡Sigue adelante, no mires atrás! 👀",
-        "Tu determinación es admirable 🌟",
-        "¡Hoy es el día perfecto para avanzar! 📅",
-        "La consistencia es tu superpoder 🦸‍♀️",
-        "¡Estás más cerca de tu meta! 🎯",
-        "Cada día cuenta, cada peso importa 💵",
-        "¡Eres un ejemplo de disciplina! 👏"
+        R.string.motivational_message_1,
+        R.string.motivational_message_2,
+        R.string.motivational_message_3,
+        R.string.motivational_message_4,
+        R.string.motivational_message_5,
+        R.string.motivational_message_6,
+        R.string.motivational_message_7,
+        R.string.motivational_message_8,
+        R.string.motivational_message_9,
+        R.string.motivational_message_10,
+        R.string.motivational_message_11,
+        R.string.motivational_message_12,
+        R.string.motivational_message_13,
+        R.string.motivational_message_14,
+        R.string.motivational_message_15,
+        R.string.motivational_message_16,
+        R.string.motivational_message_17,
+        R.string.motivational_message_18,
+        R.string.motivational_message_19,
+        R.string.motivational_message_20,
+        R.string.motivational_message_21,
+        R.string.motivational_message_22,
+        R.string.motivational_message_23,
+        R.string.motivational_message_24,
+        R.string.motivational_message_25,
+        R.string.motivational_message_26,
+        R.string.motivational_message_27,
+        R.string.motivational_message_28,
+        R.string.motivational_message_29,
+        R.string.motivational_message_30
     )
     
     /**
-     * Get a random motivational message
+     * Get a random motivational message resource ID
      */
-    fun getRandom(): String {
+    fun getRandom(): Int {
         return messages.random()
     }
     
     /**
-     * Get a specific message by index
+     * Get a specific message resource ID by index
      */
-    fun get(index: Int): String {
+    fun get(index: Int): Int {
         return messages[index % messages.size]
     }
     
     /**
-     * Get all messages
+     * Get all message resource IDs
      */
-    fun getAll(): List<String> = messages
+    fun getAll(): List<Int> = messages
 }
