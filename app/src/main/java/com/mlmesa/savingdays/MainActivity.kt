@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -114,8 +115,8 @@ class MainActivity : ComponentActivity() {
                     AlertDialog(
                         onDismissRequest = {
                         },
-                        title = { Text("Actualización descargada") },
-                        text = { Text("La nueva versión de la aplicación ha sido descargada. Reinicia para instalarla.") },
+                        title = { Text(stringResource(R.string.update_downloaded_title)) },
+                        text = { Text(stringResource(R.string.update_downloaded_message)) },
                         confirmButton = {
                             TextButton(
                                 onClick = {
@@ -123,7 +124,7 @@ class MainActivity : ComponentActivity() {
                                     mainViewModel.hideUpdateDialog()
                                 }
                             ) {
-                                Text("Reiniciar")
+                                Text(stringResource(R.string.update_downloaded_confirm))
                             }
                         },
                     )

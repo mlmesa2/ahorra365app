@@ -2,6 +2,7 @@ package com.mlmesa.savingdays.ui.achievements
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.local.entity.Achievement
 import com.mlmesa.savingdays.data.local.entity.AchievementType
 import com.mlmesa.savingdays.data.local.preferences.UserPreferencesRepository
@@ -53,28 +54,28 @@ class AchievementsViewModel @Inject constructor(
         )
     
     /**
-     * Get achievement title
+     * Get achievement title resource ID
      */
-    fun getAchievementTitle(type: AchievementType): String {
+    fun getAchievementTitleRes(type: AchievementType): Int {
         return when (type) {
-            AchievementType.STREAK_7 -> "Racha de 7 Días"
-            AchievementType.DAYS_30 -> "30 Días Completados"
-            AchievementType.DAYS_100 -> "100 Días Completados"
-            AchievementType.HALF_COMPLETE -> "Mitad del Camino"
-            AchievementType.COMPLETE -> "¡Reto Completado!"
+            AchievementType.STREAK_7 -> R.string.achievements_screen_streak_7_title
+            AchievementType.DAYS_30 -> R.string.achievements_screen_days_30_title
+            AchievementType.DAYS_100 -> R.string.achievements_screen_days_100_title
+            AchievementType.HALF_COMPLETE -> R.string.achievements_screen_half_complete_title
+            AchievementType.COMPLETE -> R.string.achievements_screen_complete_title
         }
     }
     
     /**
-     * Get achievement description
+     * Get achievement description resource ID
      */
-    fun getAchievementDescription(type: AchievementType): String {
+    fun getAchievementDescriptionRes(type: AchievementType): Int {
         return when (type) {
-            AchievementType.STREAK_7 -> "Completa 7 días consecutivos"
-            AchievementType.DAYS_30 -> "Completa 30 días del reto"
-            AchievementType.DAYS_100 -> "Completa 100 días del reto"
-            AchievementType.HALF_COMPLETE -> "Completa el 50% del reto (183 días)"
-            AchievementType.COMPLETE -> "Completa los 365 días del reto"
+            AchievementType.STREAK_7 -> R.string.achievements_screen_streak_7_description
+            AchievementType.DAYS_30 -> R.string.achievements_screen_days_30_description
+            AchievementType.DAYS_100 -> R.string.achievements_screen_days_100_description
+            AchievementType.HALF_COMPLETE -> R.string.achievements_screen_half_complete_description
+            AchievementType.COMPLETE -> R.string.achievements_screen_complete_description
         }
     }
     

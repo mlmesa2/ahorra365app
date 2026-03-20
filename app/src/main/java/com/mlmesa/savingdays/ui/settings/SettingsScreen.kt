@@ -121,7 +121,8 @@ fun SettingsScreen(
     var showTimePickerDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val url = stringResource(R.string.pp_url)
-    val barColor = MaterialTheme.colorScheme.primary.toArgb()
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val barColor = remember(primaryColor) { primaryColor.toArgb() }
 
     var triggerPermissionCheck by remember { mutableStateOf(false) }
     var showForceDialog by remember { mutableStateOf(false) }
@@ -129,7 +130,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { ScreenTitle(title = "Configuración") }
+                title = { ScreenTitle(title = stringResource(R.string.settings_screen_title)) }
             )
         }
     ) { paddingValues ->
@@ -158,11 +159,11 @@ fun SettingsScreen(
         ) {
             // Notifications section
 
-            SettingsSection(title = "Notificaciones") {
+            SettingsSection(title = stringResource(R.string.settings_screen_notifications_section)) {
                 SettingsItemSwitch(
                     icon = if (preferences.notificationsEnabled) Icons.Default.AlarmOn else Icons.Default.AlarmOff,
-                    title = "Activar notificaciones",
-                    subtitle = "Notificaciones de nuevos retos",
+                    title = stringResource(R.string.settings_screen_notifications_enable),
+                    subtitle = stringResource(R.string.settings_screen_notifications_subtitle),
                     onClick = null,
                     isSwitchChecked = preferences.notificationsEnabled,
                     onCheckedChange = { isChecked ->
@@ -175,7 +176,7 @@ fun SettingsScreen(
                 )
                 SettingsItem(
                     icon = Icons.Default.Notifications,
-                    title = "Hora de notificación",
+                    title = stringResource(R.string.settings_screen_notifications_time),
                     subtitle = String.format(
                         Locale.getDefault(),
                         "%02d:%02d",
@@ -190,10 +191,10 @@ fun SettingsScreen(
             HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
             // Currency section
-            SettingsSection(title = "País / Moneda") {
+            SettingsSection(title = stringResource(R.string.settings_screen_country_section)) {
                 SettingsItem(
                     icon = Icons.Default.AttachMoney,
-                    title = "País",
+                    title = stringResource(R.string.settings_screen_country_label),
                     subtitle = stringResource(preferences.currencyScale.displayName),
                     onClick = { showCountryDialog = true }
                 )
@@ -201,11 +202,11 @@ fun SettingsScreen(
             HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
             // Auto-reset section
-            SettingsSection(title = "Reinicio automático") {
+            SettingsSection(title = stringResource(R.string.settings_screen_auto_reset_section)) {
                 SettingsItemSwitch(
                     icon = Icons.Default.RestartAlt,
-                    title = "Reiniciar el 1 de enero",
-                    subtitle = "El reto se reiniciará automáticamente cada año",
+                    title = stringResource(R.string.settings_screen_auto_reset_enable),
+                    subtitle = stringResource(R.string.settings_screen_auto_reset_subtitle),
                     onClick = null,
                     isSwitchChecked = preferences.autoResetEnabled,
                     onCheckedChange = { toggleAutoReset(it) }
@@ -220,17 +221,17 @@ fun SettingsScreen(
                     .padding(horizontal = 16.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Estadísticas",
+                            text = stringResource(R.string.settings_screen_statistics_title),
                             style = MaterialTheme.typography.titleMedium
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text("Total ahorrado: ${preferences.currencyScale.formatAmount(stats.totalSaved)}")
-                        Text("Días completados: ${stats.daysCompleted}/${Constants.TOTAL_CHALLENGE_DAYS}")
-                        Text("Progreso: ${stats.progressPercentage.toInt()}%")
-                        Text("Racha actual: ${stats.currentStreak} días")
-                        Text("Mejor racha: ${stats.longestStreak} días")
+                        Text(stringResource(R.string.settings_screen_statistics_total_saved, preferences.currencyScale.formatAmount(stats.totalSaved)))
+                        Text(stringResource(R.string.settings_screen_statistics_days_completed, stats.daysCompleted, Constants.TOTAL_CHALLENGE_DAYS))
+                        Text(stringResource(R.string.settings_screen_statistics_progress, stats.progressPercentage.toInt()))
+                        Text(stringResource(R.string.settings_screen_statistics_current_streak, stats.currentStreak))
+                        Text(stringResource(R.string.settings_screen_statistics_longest_streak, stats.longestStreak))
                     }
                 }
             }
@@ -247,15 +248,15 @@ fun SettingsScreen(
             ) {
                 Icon(Icons.Default.RestartAlt, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Reiniciar reto ahora")
+                Text(stringResource(R.string.settings_screen_reset_button))
             }
             HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
             // About section
-            SettingsSection(title = "Acerca de") {
+            SettingsSection(title = stringResource(R.string.settings_screen_about_section)) {
                 SettingsItem(
                     icon = Icons.Default.Info,
-                    title = "Version",
+                    title = stringResource(R.string.settings_screen_version),
                     subtitle = buildString {
                         append(stringResource(R.string.app_name))
                         append(" ")
@@ -278,10 +279,10 @@ fun SettingsScreen(
                             if (webIntent.resolveActivity(context.packageManager) != null) {
                                 context.startActivity(webIntent)
                             } else {
-                                // Si tampoco hay navegador, informamos al usuario
+                                // Si tampoco hay navegador, informamos al usuario usando el recurso directamente
                                 Toast.makeText(
                                     context,
-                                    "No se encontró un navegador para abrir la aplicación.",
+                                    R.string.settings_screen_browser_not_found,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -291,7 +292,7 @@ fun SettingsScreen(
 
                 SettingsItem(
                     icon = Icons.Default.PrivacyTip,
-                    title = "Políticas de privacidad",
+                    title = stringResource(R.string.settings_screen_privacy_policy),
                     subtitle = url,
                     onClick = {
                         launchChromeTab(context = context, url = url, toolbarColor = barColor)
@@ -343,8 +344,8 @@ fun SettingsScreen(
     if (showResetDialog) {
         AlertDialog(
             onDismissRequest = { hideResetConfirmation() },
-            title = { Text("¿Reiniciar reto?") },
-            text = { Text("Esto eliminará todo tu progreso actual y comenzarás un nuevo reto. Esta acción no se puede deshacer.") },
+            title = { Text(stringResource(R.string.settings_screen_reset_dialog_title)) },
+            text = { Text(stringResource(R.string.settings_screen_reset_dialog_text)) },
             confirmButton = {
                 TextButton(
                     onClick = { resetChallenge() },
@@ -352,12 +353,12 @@ fun SettingsScreen(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text("Reiniciar")
+                    Text(stringResource(R.string.settings_screen_reset_dialog_confirm))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { hideResetConfirmation() }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.settings_screen_cancel))
                 }
             }
         )
@@ -368,19 +369,19 @@ fun SettingsScreen(
         ) {
             AlertDialog(
                 onDismissRequest = { showForceDialog = false },
-                title = { Text("Permiso de notificación") },
-                text = { Text("Para otorgar el permiso de notificación es necesario ir a los ajustes de la app")},
+                title = { Text(stringResource(R.string.settings_screen_permission_dialog_title)) },
+                text = { Text(stringResource(R.string.settings_screen_permission_dialog_text))},
                 confirmButton = {
                     TextButton(onClick = {
                         openAppNotificationSettings(context, context.packageName)
                         showForceDialog = false
                     }) {
-                        Text("Ir a ajustes")
+                        Text(stringResource(R.string.settings_screen_permission_dialog_confirm))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showForceDialog = false }) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.settings_screen_cancel))
                     }
                 }
             )
@@ -399,7 +400,7 @@ fun CurrencySelectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Seleccionar moneda") },
+        title = { Text(stringResource(R.string.settings_screen_currency_dialog_title)) },
         text = {
             Column {
                 listOf("$", "€", "MXN", "£", "¥").forEach { currency ->
@@ -415,7 +416,7 @@ fun CurrencySelectionDialog(
                     OutlinedTextField(
                         value = customCurrency,
                         onValueChange = { customCurrency = it },
-                        label = { Text("Personalizado") },
+                        label = { Text(stringResource(R.string.settings_screen_currency_custom_label)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     TextButton(
@@ -426,14 +427,14 @@ fun CurrencySelectionDialog(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Confirmar")
+                        Text(stringResource(R.string.settings_screen_confirm))
                     }
                 } else {
                     TextButton(
                         onClick = { showCustomInput = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Personalizado...")
+                        Text(stringResource(R.string.settings_screen_custom_dots))
                     }
                 }
             }
@@ -441,7 +442,7 @@ fun CurrencySelectionDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.settings_screen_cancel))
             }
         }
     )
@@ -456,7 +457,7 @@ fun CountryScaleSelectionDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Seleccionar país") },
+        title = { Text(stringResource(R.string.settings_screen_country_dialog_title)) },
         text = {
             Column {
                 CurrencyScale.getAllScales().forEach { scale ->
@@ -477,7 +478,7 @@ fun CountryScaleSelectionDialog(
                 // Check if user has data (completed days > 0)
                 if ((daysCompleted ?: 0) > 0) {
                     Text(
-                        text = "Si cambias de país, los montos se ajustarán a la nueva moneda. Como ya tienes días completados, el resultado final del monto ahorrado podría variar del original mostrado.",
+                        text = stringResource(R.string.settings_screen_country_change_warning),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Justify
@@ -490,7 +491,7 @@ fun CountryScaleSelectionDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.settings_screen_cancel))
             }
         }
     )
@@ -512,7 +513,7 @@ fun TimePickerDialog(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Seleccionar hora") },
+        title = { Text(stringResource(R.string.settings_screen_time_dialog_title)) },
         text = {
             TimePicker(state = timePickerState)
         },
@@ -522,12 +523,12 @@ fun TimePickerDialog(
                     onConfirm(timePickerState.hour, timePickerState.minute)
                 }
             ) {
-                Text("Confirmar")
+                Text(stringResource(R.string.settings_screen_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.settings_screen_cancel))
             }
         }
     )

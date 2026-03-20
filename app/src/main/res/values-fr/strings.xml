@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Économisez 365 jours</string>
+
+    <!--OnboardingStrings:-->
+    <string name="onboarding_button_before">Précédent</string>
+    <string name="onboarding_button_next">Suivant</string>
+    <string name="onboarding_button_start">Commencer</string>
+
+    <!--- Onboarding Page 4 (Welcome) -->
+    <string name="onboarding_welcome_section_title">Bienvenue sur Économisez365 !</string>
+    <string name="onboarding_welcome_section_description">Votre compagnon pour le défi d\'épargne annuel le plus populaire au monde.</string>
+    <string name="onboarding_welcome_section_description_details">Économisez chaque jour un montant différent et à la fin de l\'année vous aurez accumulé une somme importante.</string>
+
+    <!--- Onboarding Page 2 (How it works) -->
+    <string name="onboarding_howitworks_section_title">Comment ça marche ?</string>
+    <string name="onboarding_howitworks_section_calendar_item_title">365 jours, 365 montants</string>
+    <string name="onboarding_howitworks_section_calendar_item_description">Chaque jour de l\'année a un montant assigné de 1 à 365</string>
+    <string name="onboarding_howitworks_section_savings_item_title">Ordre aléatoire</string>
+    <string name="onboarding_howitworks_section_savings_item_description">Les montants apparaissent dans un ordre aléatoire pour rendre le défi plus amusant</string>
+    <string name="onboarding_howitworks_section_progress_item_title">Marquez vos progrès</string>
+    <string name="onboarding_howitworks_section_progress_item_description">Chaque jour où vous économisez, marquez-le comme terminé</string>
+
+    <!--- Onboarding Page 3 (Country Selection) -->
+    <string name="onboarding_country_section_title">Sélectionnez votre pays</string>
+    <string name="onboarding_country_section_description">Les montants seront ajustés en fonction de votre devise locale</string>
+    <string name="onboarding_country_item_range">Plage : %1$s1 - %2$s</string>
+
+    <!--- Onboarding Page 4 (Notifications) -->
+    <string name="onboarding_notifications_section_title">Rappels quotidiens</string>
+    <string name="onboarding_notifications_section_description">Recevez une notification quotidienne pour vous rappeler de mettre de côté vos économies de la journée.</string>
+    <string name="onboarding_notifications_card_title">Activer les notifications</string>
+    <string name="onboarding_notifications_card_subtitle">Heure par défaut : 9h00</string>
+    <string name="onboarding_notifications_footer_text">Vous pouvez modifier ce paramètre à tout moment depuis les Paramètres.</string>
+
+    <!-- HomeScreen Strings -->
+    <string name="home_screen_title">Ahorra365</string>
+    <string name="home_screen_refresh_content_description">Actualiser</string>
+    <string name="home_screen_no_challenge_available">Aucun défi disponible pour aujourd\'hui</string>
+    <string name="home_screen_challenge_day_number">Jour %1$d sur 365</string>
+    <string name="home_screen_daily_amount_label">Montant du jour</string>
+    <string name="home_screen_challenge_completed">Terminé !</string>
+    <string name="home_screen_mark_as_completed">Marquer comme terminé</string>
+    <string name="home_screen_statistics_progress_title">Progrès</string>
+    <string name="home_screen_statistics_progress_percentage">%1$d%% terminé</string>
+    <string name="home_screen_statistics_total_saved">Total économisé</string>
+    <string name="home_screen_statistics_month_saved">Économisé ce mois-ci</string>
+    <string name="home_screen_statistics_days_completed">Jours terminés</string>
+    <string name="home_screen_statistics_current_streak">Série actuelle</string>
+    <string name="home_screen_statistics_longest_streak">Meilleure série</string>
+    <string name="home_screen_achievement_dialog_title">Succès déverrouillé !</string>
+    <string name="home_screen_achievement_dialog_confirm">Génial !</string>
+
+    <!-- Calendar Screen Strings -->
+    <string name="calendar_screen_previous_month">Mois précédent</string>
+    <string name="calendar_screen_today">Aujourd\'hui</string>
+    <string name="calendar_screen_next_month">Mois suivant</string>
+    <string name="calendar_screen_day_number">Jour %1$d</string>
+    <string name="calendar_screen_date_label">Date : %1$s</string>
+    <string name="calendar_screen_amount_label">Montant : %1$s</string>
+    <string name="calendar_screen_amount_hidden">Montant : ???</string>
+    <string name="calendar_screen_amount_reveal_message">Le montant sera révélé ce jour-là</string>
+    <string name="calendar_screen_status_completed">✓ Terminé</string>
+    <string name="calendar_screen_status_pending">En attente</string>
+    <string name="calendar_screen_past_completion_message">Vous pouvez marquer ce jour comme terminé même s\'il est déjà passé</string>
+    <string name="calendar_screen_mark_completed">Marquer comme terminé</string>
+    <string name="calendar_screen_close">Fermer</string>
+    <string name="calendar_screen_cancel">Annuler</string>
+
+    <!-- Achievements Screen Strings -->
+    <string name="achievements_screen_title">Succès</string>
+    <string name="achievements_screen_summary_title">Succès déverrouillés</string>
+    <string name="achievements_screen_summary_count">%1$d / %2$d</string>
+    <string name="achievements_screen_unlocked_label">Déverrouillé !</string>
+    <string name="achievements_screen_progress_percentage">%1$d%%</string>
+
+    <!-- Achievement Titles and Descriptions -->
+    <string name="achievements_screen_streak_7_title">Série de 7 jours</string>
+    <string name="achievements_screen_streak_7_description">Terminez 7 jours consécutifs</string>
+    <string name="achievements_screen_days_30_title">30 Jours Terminés</string>
+    <string name="achievements_screen_days_30_description">Terminez 30 jours du défi</string>
+    <string name="achievements_screen_days_100_title">100 Jours Terminés</string>
+    <string name="achievements_screen_days_100_description">Terminez 100 jours du défi</string>
+    <string name="achievements_screen_half_complete_title">À mi-chemin</string>
+    <string name="achievements_screen_half_complete_description">Terminez 50 % du défi (183 jours)</string>
+    <string name="achievements_screen_complete_title">Défi terminé !</string>
+    <string name="achievements_screen_complete_description">Terminez les 365 jours du défi</string>
+
+    <!-- Settings Screen Strings -->
+    <string name="settings_screen_title">Paramètres</string>
+    <string name="settings_screen_notifications_section">Notifications</string>
+    <string name="settings_screen_notifications_enable">Activer les notifications</string>
+    <string name="settings_screen_notifications_subtitle">Notifications de nouveaux défis</string>
+    <string name="settings_screen_notifications_time">Heure de notification</string>
+    <string name="settings_screen_country_section">Pays / Devise</string>
+    <string name="settings_screen_country_label">Pays</string>
+    <string name="settings_screen_auto_reset_section">Réinitialisation automatique</string>
+    <string name="settings_screen_auto_reset_enable">Réinitialiser le 1er janvier</string>
+    <string name="settings_screen_auto_reset_subtitle">Le défi sera réinitialisé automatiquement chaque année</string>
+    <string name="settings_screen_statistics_title">Statistiques</string>
+    <string name="settings_screen_statistics_total_saved">Total économisé : %1$s</string>
+    <string name="settings_screen_statistics_days_completed">Jours terminés : %1$d/%2$d</string>
+    <string name="settings_screen_statistics_progress">Progrès : %1$d%%</string>
+    <string name="settings_screen_statistics_current_streak">Série actuelle : %1$d jours</string>
+    <string name="settings_screen_statistics_longest_streak">Meilleure série : %1$d jours</string>
+    <string name="settings_screen_reset_button">Réinitialiser le défi maintenant</string>
+    <string name="settings_screen_about_section">À propos</string>
+    <string name="settings_screen_version">Version</string>
+    <string name="settings_screen_browser_not_found">Aucun navigateur trouvé pour ouvrir l\'application.</string>
+    <string name="settings_screen_privacy_policy">Politique de confidentialité</string>
+    <string name="settings_screen_currency_dialog_title">Sélectionner la devise</string>
+    <string name="settings_screen_currency_custom_label">Personnalisé</string>
+    <string name="settings_screen_confirm">Confirmer</string>
+    <string name="settings_screen_custom_dots">Personnalisé…</string>
+    <string name="settings_screen_cancel">Annuler</string>
+    <string name="settings_screen_country_dialog_title">Sélectionner le pays</string>
+    <string name="settings_screen_country_change_warning">Si vous changez de pays, les montants seront ajustés à la nouvelle devise. Comme vous avez déjà des jours terminés, le résultat final du montant économisé pourrait différer de l\'original affiché.</string>
+    <string name="settings_screen_time_dialog_title">Sélectionner l\'heure</string>
+    <string name="settings_screen_reset_dialog_title">Réinitialiser le défi ?</string>
+    <string name="settings_screen_reset_dialog_text">Cela supprimera tous vos progrès actuels et vous commencerez un nouveau défi. Cette action est irréversible.</string>
+    <string name="settings_screen_reset_dialog_confirm">Réinitialiser</string>
+    <string name="settings_screen_permission_dialog_title">Autorisation de notification</string>
+    <string name="settings_screen_permission_dialog_text">Pour accorder l\'autorisation de notification, vous devez accéder aux paramètres de l\'application</string>
+    <string name="settings_screen_permission_dialog_confirm">Aller aux paramètres</string>
+
+    <string name="january">Janvier</string>
+    <string name="february">Février</string>
+    <string name="march">Mars</string>
+    <string name="april">Avril</string>
+    <string name="may">Mai</string>
+    <string name="june">Juin</string>
+    <string name="july">Juillet</string>
+    <string name="august">Août</string>
+    <string name="september">Septembre</string>
+    <string name="october">Octobre</string>
+    <string name="november">Novembre</string>
+    <string name="december">Décembre</string>
+    <string name="sunday_letter">D</string>
+    <string name="monday_letter">L</string>
+    <string name="tuesday_letter">M</string>
+    <string name="wednesday_letter">M</string>
+    <string name="thursday_letter">J</string>
+    <string name="friday_letter">V</string>
+    <string name="saturday_letter">S</string>
+    <string name="pp_url">https://mlmesa2.github.io/Ahorra365/fr/</string>
+
+    <!--CurrencyScale countries:-->
+    <string name="country_name_colombia">Colombie (COP)</string>
+    <string name="country_name_europe">Europe (EUR)</string>
+    <string name="country_name_united_sates">États-Unis (USD)</string>
+    <string name="country_name_mexico">Mexique (MXN)</string>
+    <string name="country_name_argentina">Argentine (ARS)</string>
+    <string name="country_name_chile">Chili (CLP)</string>
+    <string name="country_name_brazil">Brésil (BRL)</string>
+    <string name="country_name_peru">Pérou (PEN)</string>
+    <string name="country_name_great_britain">Royaume-Uni (GBP)</string>
+    <string name="country_name_generic">Générique</string>
+
+    <!--StatisticsScreenStrings: -->
+    <string name="no_data_year">Aucune donnée pour cette année</string>
+    <string name="statistics_screen_title">Statistiques</string>
+    <string name="summary_card_total_saved">Total économisé</string>
+    <string name="summary_card_best_month">Meilleur mois</string>
+    <string name="monthly_chart_title">Économie mensuelle</string>
+    <string name="summary_card_yearly_title">Économie annuelle</string>
+    <string name="total_saved">Total économisé</string>
+    <string name="total_to_save">Total à économiser</string>
+    <string name="final_goal">Objectif final : %1$s</string>
+
+    <!-- Navbar navigation titles-->
+    <string name="navbar_name_home">Accueil</string>
+    <string name="navbar_name_calendar">Calendrier</string>
+    <string name="navbar_name_statistics">Statistiques</string>
+    <string name="navbar_name_achievements">Succès</string>
+    <string name="navbar_name_settings">Paramètres</string>
+
+    <!-- App Updates MainActivity-->
+    <string name="update_downloaded_title">Mise à jour téléchargée</string>
+    <string name="update_downloaded_message">La nouvelle version de l\'application a été téléchargée. Redémarrez pour l\'installer.</string>
+    <string name="update_downloaded_confirm">Redémarrer</string>
+
+    <!-- Notification Strings -->
+    <string name="notification_content_text">Économisez %1$s%2$d aujourd\'hui. %3$s</string>
+    <string name="notification_title_text">Défi du jour !</string>
+    <string name="notification_big_content_text">Économisez %1$s%2$d aujourd\'hui. %3$s</string>
+
+    <!-- Motivational Messages -->
+    <string name="motivational_message_1">Chaque centime compte ! 💰</string>
+    <string name="motivational_message_2">Vous êtes sur la bonne voie ! 🌟</string>
+    <string name="motivational_message_3">L\'épargne est la voie de la liberté financière 🚀</string>
+    <string name="motivational_message_4">Aujourd\'hui est un grand jour pour économiser ! ☀️</string>
+    <string name="motivational_message_5">Petits pas, grandes réalisations 👣</string>
+    <string name="motivational_message_6">Votre futur vous remerciera ! 🙏</string>
+    <string name="motivational_message_7">La constance est la clé du succès 🔑</string>
+    <string name="motivational_message_8">Continuez comme ça, champion ! 🏆</string>
+    <string name="motivational_message_9">Chaque jour est une nouvelle opportunité 🌈</string>
+    <string name="motivational_message_10">Vos efforts en valent la peine ! 💪</string>
+    <string name="motivational_message_11">L\'épargne d\'aujourd\'hui est la sécurité de demain 🛡️</string>
+    <string name="motivational_message_12">Vous construisez votre futur ! 🏗️</string>
+    <string name="motivational_message_13">La discipline vous mènera loin 🎯</string>
+    <string name="motivational_message_14">N\'abandonnez pas, vous y êtes presque ! 🎉</string>
+    <string name="motivational_message_15">Vos objectifs sont plus proches que vous ne le pensez 🎁</string>
+    <string name="motivational_message_16">Vous êtes plus fort que vous ne le pensez ! 💎</string>
+    <string name="motivational_message_17">Le succès est la somme de petits efforts 📈</string>
+    <string name="motivational_message_18">Aujourd\'hui, c\'est votre jour de gloire ! ✨</string>
+    <string name="motivational_message_19">La persévérance gagne toujours 🥇</string>
+    <string name="motivational_message_20">Faites confiance au processus ! 🌱</string>
+    <string name="motivational_message_21">Chaque économie vous rapproche de vos rêves 💭</string>
+    <string name="motivational_message_22">Vous pouvez y arriver ! 🦸</string>
+    <string name="motivational_message_23">Le changement commence par une décision 🔄</string>
+    <string name="motivational_message_24">Allez de l\'avant, ne regardez pas en arrière ! 👀</string>
+    <string name="motivational_message_25">Votre détermination est admirable 🌟</string>
+    <string name="motivational_message_26">Aujourd\'hui est le jour idéal pour avancer ! 📅</string>
+    <string name="motivational_message_27">La cohérence est votre superpouvoir 🦸‍♀️</string>
+    <string name="motivational_message_28">Vous vous rapprochez de votre objectif ! 🎯</string>
+    <string name="motivational_message_29">Chaque jour compte, chaque pièce est importante 💵</string>
+    <string name="motivational_message_30">Vous êtes un exemple de discipline ! 👏</string>
+
+</resources>

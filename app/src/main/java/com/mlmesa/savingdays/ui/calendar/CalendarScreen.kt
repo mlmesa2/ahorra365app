@@ -86,19 +86,19 @@ fun CalendarScreen(
                         previousMonth()
                         isVisibleData = false
                     }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Mes anterior")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.calendar_screen_previous_month))
                     }
                     IconButton(onClick = {
                         goToToday()
                         isVisibleData = true
                     }) {
-                        Icon(Icons.Default.Today, contentDescription = "Hoy")
+                        Icon(Icons.Default.Today, contentDescription = stringResource(R.string.calendar_screen_today))
                     }
                     IconButton(onClick = {
                         nextMonth()
                         isVisibleData = false
                     }) {
-                        Icon(Icons.Default.ArrowForward, contentDescription = "Siguiente mes")
+                        Icon(Icons.Default.ArrowForward, contentDescription = stringResource(R.string.calendar_screen_next_month))
                     }
                 }
             )
@@ -256,6 +256,7 @@ fun DayCell(
 @Composable
 fun ChallengeDetailsDialog(
     challenge: DailyChallenge,
+    currencyScale: CurrencyScale,
     onDismiss: () -> Unit,
     onComplete: (DailyChallenge) -> Unit
 ) {
@@ -267,29 +268,29 @@ fun ChallengeDetailsDialog(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Día ${challenge.dayNumber}") },
+        title = { Text(stringResource(R.string.calendar_screen_day_number, challenge.dayNumber)) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Fecha: ${DateUtils.formatMedium(challenge.date)}")
+                Text(stringResource(R.string.calendar_screen_date_label, DateUtils.formatMedium(challenge.date)))
                 
                 // Solo mostrar monto si el día ya pasó o es hoy
                 if (isPastOrToday) {
                     Text(
-                        text = "Monto: $${challenge.amount}",
+                        text = stringResource(R.string.calendar_screen_amount_label, currencyScale.formatAmount(challenge.amount)),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 } else {
                     Text(
-                        text = "Monto: ???",
+                        text = stringResource(R.string.calendar_screen_amount_hidden),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "El monto se revelará cuando llegue este día",
+                        text = stringResource(R.string.calendar_screen_amount_reveal_message),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -298,7 +299,10 @@ fun ChallengeDetailsDialog(
                 Spacer(modifier = Modifier.height(4.dp))
                 
                 Text(
-                    text = if (challenge.isCompleted) "✓ Completado" else "Pendiente",
+                    text = if (challenge.isCompleted) 
+                        stringResource(R.string.calendar_screen_status_completed) 
+                    else 
+                        stringResource(R.string.calendar_screen_status_pending),
                     color = if (challenge.isCompleted) 
                         MaterialTheme.colorScheme.primary 
                     else 
@@ -310,7 +314,7 @@ fun ChallengeDetailsDialog(
                 if (isPast && !challenge.isCompleted) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Puedes marcar este día como completado aunque ya haya pasado",
+                        text = stringResource(R.string.calendar_screen_past_completion_message),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -325,18 +329,18 @@ fun ChallengeDetailsDialog(
                         onDismiss()
                     }
                 ) {
-                    Text("Marcar como completado")
+                    Text(stringResource(R.string.calendar_screen_mark_completed))
                 }
             } else {
                 TextButton(onClick = onDismiss) {
-                    Text("Cerrar")
+                    Text(stringResource(R.string.calendar_screen_close))
                 }
             }
         },
         dismissButton = if (canComplete) {
             {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.calendar_screen_cancel))
                 }
             }
         } else null
@@ -368,27 +372,27 @@ fun ChallengeDetailsCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Día ${challenge.dayNumber}",
+                    text = stringResource(R.string.calendar_screen_day_number, challenge.dayNumber),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
-                Text("Fecha: ${DateUtils.formatMedium(challenge.date)}")
+                Text(stringResource(R.string.calendar_screen_date_label, DateUtils.formatMedium(challenge.date)))
 
                 if (isPastOrToday) {
                     Text(
-                        text = "Monto: ${currencyScale.formatAmount(challenge.amount)}",
+                        text = stringResource(R.string.calendar_screen_amount_label, currencyScale.formatAmount(challenge.amount)),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 } else {
                     Text(
-                        text = "Monto: ???",
+                        text = stringResource(R.string.calendar_screen_amount_hidden),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "El monto se revelará cuando llegue este día",
+                        text = stringResource(R.string.calendar_screen_amount_reveal_message),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -397,7 +401,10 @@ fun ChallengeDetailsCard(
 //                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = if (challenge.isCompleted) "✓ Completado" else "Pendiente",
+                    text = if (challenge.isCompleted) 
+                        stringResource(R.string.calendar_screen_status_completed) 
+                    else 
+                        stringResource(R.string.calendar_screen_status_pending),
                     color = if (challenge.isCompleted)
                         MaterialTheme.colorScheme.primary
                     else
@@ -409,7 +416,7 @@ fun ChallengeDetailsCard(
                 if (isPast && !challenge.isCompleted) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "Puedes marcar este día como completado aunque ya haya pasado",
+                        text = stringResource(R.string.calendar_screen_past_completion_message),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -420,7 +427,7 @@ fun ChallengeDetailsCard(
                         onClick = {
                             onComplete(challenge)
                         }) {
-                        Text("Marcar como completado")
+                        Text(stringResource(R.string.calendar_screen_mark_completed))
                     }
                 }
             }

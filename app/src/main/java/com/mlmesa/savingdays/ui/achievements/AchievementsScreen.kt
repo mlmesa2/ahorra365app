@@ -8,11 +8,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.local.entity.Achievement
 import com.mlmesa.savingdays.data.local.entity.AchievementType
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
@@ -35,8 +37,8 @@ fun AchievementsScreen(
         unlockedCount = unlockedCount,
         completedCount = completedCount,
         currentStreak = currentStreak,
-        getAchievementTitle = viewModel::getAchievementTitle,
-        getAchievementDescription = viewModel::getAchievementDescription,
+        getAchievementTitleRes = viewModel::getAchievementTitleRes,
+        getAchievementDescriptionRes = viewModel::getAchievementDescriptionRes,
         getAchievementIcon = viewModel::getAchievementIcon,
         getProgress = viewModel::getProgress
     )
@@ -50,8 +52,8 @@ fun AchievementsScreen(
     unlockedCount: Int,
     completedCount: Int,
     currentStreak: Int,
-    getAchievementTitle: (AchievementType) -> String,
-    getAchievementDescription: (AchievementType) -> String,
+    getAchievementTitleRes: (AchievementType) -> Int,
+    getAchievementDescriptionRes: (AchievementType) -> Int,
     getAchievementIcon: (AchievementType) -> String,
     getProgress: (AchievementType, Int, Int) -> Float
 ) {
@@ -59,7 +61,7 @@ fun AchievementsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Logros") }
+                title = { Text(stringResource(R.string.achievements_screen_title)) }
             )
         }
     ) { paddingValues ->
@@ -79,13 +81,17 @@ fun AchievementsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Logros Desbloqueados",
+                        text = stringResource(R.string.achievements_screen_summary_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "$unlockedCount / ${achievements.size}",
+                        text = stringResource(
+                            R.string.achievements_screen_summary_count,
+                            unlockedCount,
+                            achievements.size
+                        ),
                         style = MaterialTheme.typography.displayMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -101,8 +107,8 @@ fun AchievementsScreen(
                 items(achievements) { achievement ->
                     AchievementCard(
                         achievement = achievement,
-                        title = getAchievementTitle(achievement.type),
-                        description = getAchievementDescription(achievement.type),
+                        title = stringResource(getAchievementTitleRes(achievement.type)),
+                        description = stringResource(getAchievementDescriptionRes(achievement.type)),
                         icon = getAchievementIcon(achievement.type),
                         progress = getProgress(achievement.type, completedCount, currentStreak)
                     )
@@ -157,7 +163,7 @@ fun AchievementCard(
             // Description or progress
             if (achievement.isUnlocked) {
                 Text(
-                    text = "¡Desbloqueado!",
+                    text = stringResource(R.string.achievements_screen_unlocked_label),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center
@@ -174,7 +180,10 @@ fun AchievementCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${(progress * 100).toInt()}%",
+                        text = stringResource(
+                            R.string.achievements_screen_progress_percentage,
+                            (progress * 100).toInt()
+                        ),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -200,16 +209,16 @@ private fun ArchivementScreenPreview() {
             unlockedCount = 2,
             completedCount = 45,
             currentStreak = 10,
-            getAchievementTitle = { type ->
+            getAchievementTitleRes = { type ->
                 when (type) {
-                    AchievementType.STREAK_7 -> "Racha de 7 Días"
-                    AchievementType.DAYS_30 -> "30 Días Completados"
-                    AchievementType.DAYS_100 -> "100 Días Completados"
-                    AchievementType.HALF_COMPLETE -> "Mitad del Camino"
-                    AchievementType.COMPLETE -> "¡Reto Completado!"
+                    AchievementType.STREAK_7 -> R.string.achievements_screen_streak_7_title
+                    AchievementType.DAYS_30 -> R.string.achievements_screen_days_30_title
+                    AchievementType.DAYS_100 -> R.string.achievements_screen_days_100_title
+                    AchievementType.HALF_COMPLETE -> R.string.achievements_screen_half_complete_title
+                    AchievementType.COMPLETE -> R.string.achievements_screen_complete_title
                 }
             },
-            getAchievementDescription = { "" },
+            getAchievementDescriptionRes = { R.string.achievements_screen_streak_7_description },
             getAchievementIcon = { type ->
                 when (type) {
                     AchievementType.STREAK_7 -> "🔥"

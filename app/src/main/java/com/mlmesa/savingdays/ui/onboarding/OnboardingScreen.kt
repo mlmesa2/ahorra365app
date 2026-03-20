@@ -54,6 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.model.CurrencyScale
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 
@@ -202,7 +203,7 @@ private fun NavigationButtons(
                 onClick = onPrevious,
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Anterior")
+                Text(stringResource(R.string.onboarding_button_before))
             }
         } else {
             Spacer(modifier = Modifier.weight(1f))
@@ -213,14 +214,14 @@ private fun NavigationButtons(
                 onClick = onNext,
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Siguiente")
+                Text(stringResource(R.string.onboarding_button_next))
             }
         } else {
             Button(
                 onClick = onFinish,
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Comenzar")
+                Text(stringResource(R.string.onboarding_button_start))
             }
         }
     }
@@ -231,16 +232,16 @@ private fun NavigationButtons(
 private fun WelcomePage() {
     OnboardingPageLayout(
         icon = Icons.Default.Savings,
-        title = "¡Bienvenido a Ahorra365!",
+        title = stringResource(R.string.onboarding_welcome_section_title),
         content = {
             Text(
-                text = "Tu compañero para el reto anual de ahorro más popular del mundo.",
+                text = stringResource(R.string.onboarding_welcome_section_description),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Ahorra cada día una cantidad diferente y al final del año habrás acumulado una suma significativa.",
+                text = stringResource(R.string.onboarding_welcome_section_description_details),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -254,25 +255,25 @@ private fun WelcomePage() {
 private fun HowItWorksPage() {
     OnboardingPageLayout(
         icon = Icons.Default.Info,
-        title = "¿Cómo funciona?",
+        title = stringResource(R.string.onboarding_howitworks_section_title),
         content = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 FeatureItem(
                     icon = Icons.Default.CalendarMonth,
-                    title = "365 días, 365 montos",
-                    description = "Cada día del año tiene asignado un monto del 1 al 365"
+                    title = stringResource(R.string.onboarding_howitworks_section_calendar_item_title),
+                    description = stringResource(R.string.onboarding_howitworks_section_calendar_item_description)
                 )
                 FeatureItem(
                     icon = Icons.Default.Savings,
-                    title = "Orden aleatorio",
-                    description = "Los montos aparecen en orden aleatorio para hacer el reto más divertido"
+                    title = stringResource(R.string.onboarding_howitworks_section_savings_item_title),
+                    description = stringResource(R.string.onboarding_howitworks_section_savings_item_description)
                 )
                 FeatureItem(
                     icon = Icons.Default.CheckCircle,
-                    title = "Marca tu progreso",
-                    description = "Cada día que ahorres, márcalo como completado"
+                    title = stringResource(R.string.onboarding_howitworks_section_progress_item_title),
+                    description = stringResource(R.string.onboarding_howitworks_section_progress_item_description)
                 )
             }
         }
@@ -319,10 +320,10 @@ private fun CountrySelectionPage(
 ) {
     OnboardingPageLayout(
         icon = Icons.Default.Public,
-        title = "Selecciona tu país",
+        title = stringResource(R.string.onboarding_country_section_title),
         content = {
             Text(
-                text = "Los montos se ajustarán según tu moneda local",
+                text = stringResource(R.string.onboarding_country_section_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -379,7 +380,7 @@ private fun CountryItem(
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                 )
                 Text(
-                    text = "Rango: ${scale.symbol}1 - ${scale.formatAmount(365)}",
+                    text = stringResource(R.string.onboarding_country_item_range, scale.symbol, scale.formatAmount(365)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -403,10 +404,10 @@ private fun NotificationsPage(
 
     OnboardingPageLayout(
         icon = Icons.Default.Notifications,
-        title = "Recordatorios diarios",
+        title = stringResource(R.string.onboarding_notifications_section_title),
         content = {
             Text(
-                text = "Recibe una notificación diaria para recordarte guardar tu ahorro del día.",
+                text = stringResource(R.string.onboarding_notifications_section_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -426,12 +427,12 @@ private fun NotificationsPage(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Activar notificaciones",
+                            text = stringResource(R.string.onboarding_notifications_card_title),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Hora predeterminada: 9:00 AM",
+                            text = stringResource(R.string.onboarding_notifications_card_subtitle),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -452,7 +453,7 @@ private fun NotificationsPage(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Puedes cambiar esta configuración en cualquier momento desde Ajustes.",
+                text = stringResource(R.string.onboarding_notifications_footer_text),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
