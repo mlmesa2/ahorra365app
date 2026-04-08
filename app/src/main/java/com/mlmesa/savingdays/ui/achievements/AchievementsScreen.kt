@@ -17,6 +17,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.local.entity.Achievement
 import com.mlmesa.savingdays.data.local.entity.AchievementType
+import com.mlmesa.savingdays.ui.components.ScreenTitle
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 
 /**
@@ -61,7 +62,7 @@ fun AchievementsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.achievements_screen_title)) }
+                title = { ScreenTitle(title = stringResource(R.string.achievements_screen_title)) }
             )
         }
     ) { paddingValues ->
@@ -195,7 +196,7 @@ fun AchievementCard(
 
 @Preview(showBackground = true)
 @Composable
-private fun ArchivementScreenPreview() {
+private fun AchievementScreenPreview() {
     val mockAchievements = AchievementType.entries.map { type ->
         Achievement(
             type = type,

@@ -23,13 +23,16 @@ import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -49,6 +52,7 @@ import com.developerstring.jetco.ui.charts.piechart.PieChart
 import com.developerstring.jetco.ui.charts.piechart.config.PieChartDefaults
 import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.model.CurrencyScale
+import com.mlmesa.savingdays.ui.components.ScreenTitle
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 
 @Composable
@@ -66,6 +70,7 @@ fun StatisticsScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
     modifier: Modifier = Modifier,
@@ -74,68 +79,68 @@ fun StatisticsScreen(
     selectYear: (Int) -> Unit = {}
 ) {
 
-    if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { ScreenTitle(title = stringResource(R.string.statistics_screen_title)) })
         }
-        return
-    }
+    ){ paddingValues ->
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    ) {
-        // Header
-        Text(
-            text = stringResource(R.string.statistics_screen_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Summary cards
-        SummaryCardsRow(
-            totalSaved = uiState.totalSavedAllTime,
-            bestMonth = uiState.monthlySavings.maxByOrNull { it.totalSaved },
-            currencyScale = currencyScale
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Monthly chart section
-        MonthlyChartSection(
-            monthlySavings = uiState.monthlySavings,
-            selectedYear = uiState.selectedYear,
-            availableYears = uiState.availableYears,
-            currencyScale = currencyScale,
-            onYearSelected = selectYear
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        YearlyProgressSection(
-            totalSaved = uiState.totalSavedAllTime,
-            totalTarget = uiState.totalToSave,
-            difference = uiState.difference,
-            currencyScale = currencyScale
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Yearly chart section
-        if (uiState.yearlySavings.size > 1) {
-            YearlyChartSection(
-                yearlySavings = uiState.yearlySavings,
+            // Summary cards
+            SummaryCardsRow(
+                totalSaved = uiState.totalSavedAllTime,
+                bestMonth = uiState.monthlySavings.maxByOrNull { it.totalSaved },
                 currencyScale = currencyScale
             )
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Monthly chart section
+            MonthlyChartSection(
+                monthlySavings = uiState.monthlySavings,
+                selectedYear = uiState.selectedYear,
+                availableYears = uiState.availableYears,
+                currencyScale = currencyScale,
+                onYearSelected = selectYear
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            YearlyProgressSection(
+                totalSaved = uiState.totalSavedAllTime,
+                totalTarget = uiState.totalToSave,
+                difference = uiState.difference,
+                currencyScale = currencyScale
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Yearly chart section
+            if (uiState.yearlySavings.size > 1) {
+                YearlyChartSection(
+                    yearlySavings = uiState.yearlySavings,
+                    currencyScale = currencyScale
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }
