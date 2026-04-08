@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mlmesa.savingdays.R
 import com.mlmesa.savingdays.data.local.entity.DailyChallenge
 import com.mlmesa.savingdays.data.model.CurrencyScale
+import com.mlmesa.savingdays.ui.components.ScreenTitle
 import com.mlmesa.savingdays.ui.theme.Saving365Theme
 import com.mlmesa.savingdays.util.DateUtils
 import java.time.LocalDate
@@ -78,8 +79,8 @@ fun CalendarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
-                    Text("${DateUtils.getMonthNames(context,currentYearMonth.monthValue)} ${currentYearMonth.year}")
+                title = {
+                    ScreenTitle(title = "${DateUtils.getMonthNames(context,currentYearMonth.monthValue)} ${currentYearMonth.year}")
                 },
                 actions = {
                     IconButton(onClick = {
