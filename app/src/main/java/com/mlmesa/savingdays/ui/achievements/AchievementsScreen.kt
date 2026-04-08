@@ -102,6 +102,8 @@ fun AchievementsScreen(
             // Achievements grid
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
