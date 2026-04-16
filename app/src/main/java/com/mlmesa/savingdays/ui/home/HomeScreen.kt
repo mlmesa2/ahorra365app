@@ -1,5 +1,6 @@
 package com.mlmesa.savingdays.ui.home
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +52,25 @@ fun HomeScreen(
     val notificationIsEnabled by viewModel.notificationsEnabled.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val newAchievements by viewModel.newlyUnlockedAchievements.collectAsStateWithLifecycle()
+    val shouldShowReview by viewModel.shouldShowReview.collectAsStateWithLifecycle()
+    
+    val context = LocalContext.current
+    val activity = context as? Activity
+    val inAppReviewManager = remember { viewModel.inAppReviewManager }
+
+    // Trigger review flow when shouldShowReview is true
+    LaunchedEffect(shouldShowReview) {
+        if (shouldShowReview && activity != null) {
+            inAppReviewManager.requestReviewFlow(activity) { success ->
+                viewModel.reviewShown()
+                if (!success) {
+                    Log.d("HomeScreen", "Review flow failed or not available")
+                }
+            }
+        } else {
+            Log.d("HomeScreen", "Review flow not triggered shouldShowReview: $shouldShowReview, activity in null: ${activity == null}")
+        }
+    }
 
     HomeScreen(
         todayChallenge = todayChallenge,

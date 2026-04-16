@@ -18,8 +18,8 @@ android {
         applicationId = "com.mlmesa.savingdays"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.0.9"
+        versionCode = 9
+        versionName = "0.0.11"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -110,6 +110,10 @@ dependencies {
     //In App update
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
+
+    // In-App Review
+    implementation(libs.app.review)
+    implementation(libs.app.review.ktx)
 
     // JetCo Charts
     implementation(libs.jetco.ui)

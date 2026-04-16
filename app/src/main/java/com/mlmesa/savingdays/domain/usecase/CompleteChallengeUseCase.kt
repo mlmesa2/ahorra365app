@@ -22,9 +22,12 @@ class CompleteChallengeUseCase @Inject constructor(
     suspend operator fun invoke(challenge: DailyChallenge) {
         // Mark challenge as completed
         repository.completeChallenge(challenge)
-        
+
         // Update streak
         updateStreak(challenge.date)
+
+        // Increment completed days count for review
+        preferencesRepository.incrementCompletedDaysCount()
     }
     
     /**
@@ -39,9 +42,9 @@ class CompleteChallengeUseCase @Inject constructor(
             1
         } else {
             val daysBetween = ChronoUnit.DAYS.between(lastCompletedDate, completionDate)
-            when {
-                daysBetween == 1L -> preferences.currentStreak + 1 // Consecutive day
-                daysBetween == 0L -> preferences.currentStreak // Same day (shouldn't happen)
+            when (daysBetween) {
+                1L -> preferences.currentStreak + 1 // Consecutive day
+                0L -> preferences.currentStreak // Same day (shouldn't happen)
                 else -> 1 // Streak broken, start over
             }
         }

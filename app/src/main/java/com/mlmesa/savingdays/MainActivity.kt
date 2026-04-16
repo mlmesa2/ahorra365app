@@ -13,6 +13,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -23,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -91,7 +94,6 @@ class MainActivity : ComponentActivity() {
         checkForAppUpdate()
         setContent {
             Saving365Theme {
-
                 val showUpdateDialog by mainViewModel.showUpdateDialog.collectAsStateWithLifecycle()
                 val userPreferences by mainViewModel.userPreferences.collectAsStateWithLifecycle()
 
@@ -154,7 +156,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     NavigationGraph(
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding),
                         navigationState = navigationState,
                         navigator = navigator
                     )
