@@ -111,6 +111,10 @@ dependencies {
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
 
+    // In-App Review
+    implementation(libs.app.review)
+    implementation(libs.app.review.ktx)
+
     // JetCo Charts
     implementation(libs.jetco.ui)
 

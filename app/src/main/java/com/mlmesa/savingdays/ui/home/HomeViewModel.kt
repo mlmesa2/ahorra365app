@@ -1,6 +1,7 @@
 package com.mlmesa.savingdays.ui.home
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mlmesa.savingdays.data.local.entity.Achievement
@@ -11,6 +12,7 @@ import com.mlmesa.savingdays.domain.usecase.CheckAchievementsUseCase
 import com.mlmesa.savingdays.domain.usecase.CompleteChallengeUseCase
 import com.mlmesa.savingdays.domain.usecase.GetStatisticsUseCase
 import com.mlmesa.savingdays.domain.usecase.GetTodayChallengeUseCase
+import com.mlmesa.savingdays.util.InAppReviewManager
 import com.mlmesa.savingdays.util.MotivationalMessages
 import com.mlmesa.savingdays.worker.DailyNotificationReminder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -36,8 +39,13 @@ class HomeViewModel @Inject constructor(
     private val getStatisticsUseCase: GetStatisticsUseCase,
     private val checkAchievementsUseCase: CheckAchievementsUseCase,
     private val preferencesRepository: UserPreferencesRepository,
-    private val dailyNotificationReminder: DailyNotificationReminder
+    private val dailyNotificationReminder: DailyNotificationReminder,
+    val inAppReviewManager: InAppReviewManager
 ) : AndroidViewModel(application)  {
+
+    companion object {
+        private const val TAG = "HomeViewModel"
+    }
 
 
     // State for today's challenge
@@ -85,6 +93,10 @@ class HomeViewModel @Inject constructor(
     // Loading state
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // State for triggering in-app review
+    private val _shouldShowReview = MutableStateFlow(false)
+    val shouldShowReview: StateFlow<Boolean> = _shouldShowReview.asStateFlow()
 
     private val _currentYearMonth = MutableStateFlow(YearMonth.now())
 
@@ -138,28 +150,62 @@ class HomeViewModel @Inject constructor(
     fun completeChallenge() {
         viewModelScope.launch {
             val challenge = _todayChallenge.value ?: return@launch
-            
+
             if (!challenge.isCompleted) {
                 try {
                     // Complete the challenge
                     completeChallengeUseCase(challenge)
-                    
+
                     // Update the local state
                     _todayChallenge.value = challenge.copy(isCompleted = true)
-                    
+
                     // Check for newly unlocked achievements
                     val newAchievements = checkAchievementsUseCase()
                     if (newAchievements.isNotEmpty()) {
                         _newlyUnlockedAchievements.value = newAchievements
                     }
-                    
+
                     // Refresh motivational message
                     _motivationalMessageRes.value = MotivationalMessages.getRandom()
+
+                    // Check if we should show in-app review
+                    checkAndTriggerReview()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
+    }
+
+    /**
+     * Check if review should be shown and trigger it
+     */
+    private fun checkAndTriggerReview() {
+        viewModelScope.launch {
+            val preferences = preferencesRepository.userPreferencesFlow.first()
+            val attempts = preferences.reviewAttempts
+            
+            Log.d(TAG, "Checking review - completedDays: ${preferences.completedDaysCount}, attempts: $attempts, nextThreshold: ${inAppReviewManager.getNextThresholdInfo(attempts)}")
+            
+            // Check if we should attempt review based on days completed and previous attempts
+            if (inAppReviewManager.shouldAttemptReview(preferences.completedDaysCount, attempts)) {
+                Log.d(TAG, "Triggering review flow! (attempt ${attempts + 1}/${InAppReviewManager.MAX_ATTEMPTS})")
+                _shouldShowReview.value = true
+                
+                // Increment attempt counter
+                preferencesRepository.incrementReviewAttempts()
+            } else {
+                Log.d(TAG, "Not triggering review - conditions not met")
+            }
+        }
+    }
+
+    /**
+     * Mark review as shown/reset
+     */
+    fun reviewShown() {
+        Log.d(TAG, "reviewShown callback received")
+        _shouldShowReview.value = false
     }
     
     /**

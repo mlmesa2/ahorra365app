@@ -2,6 +2,7 @@
 agp = "8.13.2"
 accompanistPermissions = "0.37.3"
 appUpdate = "2.1.0"
+appReview = "2.0.2"
 browser = "1.9.0"
 datastorePreferences = "1.2.0"
 firebaseBom = "34.7.0"
@@ -47,6 +48,8 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 jetco-ui = { module = "com.developerstring.jetco:ui", version.ref = "jetco" }
 app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
+app-review = { module = "com.google.android.play:review", version.ref = "appReview" }
+app-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "appReview" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }

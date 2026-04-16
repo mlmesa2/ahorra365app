@@ -35,6 +35,10 @@ class UserPreferencesRepository(private val context: Context) {
         private val LAST_COMPLETED_DATE = stringPreferencesKey("last_completed_date")
         private val CURRENCY_SCALE = stringPreferencesKey("currency_scale")
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        private val COMPLETED_DAYS_COUNT = intPreferencesKey("completed_days_count")
+        private val REVIEW_SHOWN = booleanPreferencesKey("review_shown")
+        private val REVIEW_ATTEMPTS = intPreferencesKey("review_attempts")
+        private val REVIEW_LAST_ATTEMPT_DATE = stringPreferencesKey("review_last_attempt_date")
     }
     
     /**
@@ -59,10 +63,14 @@ class UserPreferencesRepository(private val context: Context) {
                 currentStreak = preferences[CURRENT_STREAK] ?: 0,
                 longestStreak = preferences[LONGEST_STREAK] ?: 0,
                 lastCompletedDate = preferences[LAST_COMPLETED_DATE]?.let { LocalDate.parse(it) },
-                currencyScale = preferences[CURRENCY_SCALE]?.let { 
+                currencyScale = preferences[CURRENCY_SCALE]?.let {
                     try { CurrencyScale.valueOf(it) } catch (e: Exception) { CurrencyScale.GENERIC }
                 } ?: CurrencyScale.GENERIC,
-                onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false
+                onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false,
+                completedDaysCount = preferences[COMPLETED_DAYS_COUNT] ?: 0,
+                reviewShown = preferences[REVIEW_SHOWN] ?: false,
+                reviewAttempts = preferences[REVIEW_ATTEMPTS] ?: 0,
+                reviewLastAttemptDate = preferences[REVIEW_LAST_ATTEMPT_DATE]?.let { LocalDate.parse(it) }
             )
         }
     
@@ -165,6 +173,43 @@ class UserPreferencesRepository(private val context: Context) {
             preferences[ONBOARDING_COMPLETED] = completed
         }
     }
+
+    /**
+     * Increment completed days count
+     */
+    suspend fun incrementCompletedDaysCount() {
+        dataStore.edit { preferences ->
+            val currentCount = preferences[COMPLETED_DAYS_COUNT] ?: 0
+            preferences[COMPLETED_DAYS_COUNT] = currentCount + 1
+        }
+    }
+
+    /**
+     * Get completed days count
+     */
+    suspend fun getCompletedDaysCount(): Flow<Int> {
+        return userPreferencesFlow.map { it.completedDaysCount }
+    }
+
+    /**
+     * Mark review as shown
+     */
+    suspend fun setReviewShown(shown: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[REVIEW_SHOWN] = shown
+        }
+    }
+
+    /**
+     * Increment review attempts counter
+     */
+    suspend fun incrementReviewAttempts() {
+        dataStore.edit { preferences ->
+            val currentAttempts = preferences[REVIEW_ATTEMPTS] ?: 0
+            preferences[REVIEW_ATTEMPTS] = currentAttempts + 1
+            preferences[REVIEW_LAST_ATTEMPT_DATE] = LocalDate.now().toString()
+        }
+    }
 }
 
 data class UserPreferences(
@@ -178,5 +223,9 @@ data class UserPreferences(
     val longestStreak: Int = 0,
     val lastCompletedDate: LocalDate? = null,
     val currencyScale: CurrencyScale = CurrencyScale.GENERIC,
-    val onboardingCompleted: Boolean = false
+    val onboardingCompleted: Boolean = false,
+    val completedDaysCount: Int = 0,
+    val reviewShown: Boolean = false,
+    val reviewAttempts: Int = 0,
+    val reviewLastAttemptDate: LocalDate? = null
 )
